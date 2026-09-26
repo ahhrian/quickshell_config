@@ -1,0 +1,46 @@
+{
+  "window-rewrite": {
+    // --- Work ---
+    "kitty": "", // "", // "󰆍",
+    "onlyoffice": "󰏆",
+    "libreoffice": "󰏆",
+    "firefox": "",
+    "code": "󰨞",
+    "codium": "",
+    "antigravity-ide": "󰲇",
+    "azahar": "",
+    "obsidian": "",
+    "mousepad": "󱓧",
+    "org.gnome.Papers": "",
+    // --- Apps ---
+    "discord": "",
+    "spotify": "",
+    "org.telegram.desktop": "",
+    "org.kde.kdeconnect.app": "󰦉",
+    "org.qbittorrent.qBittorrent": "󰘿",
+    "org.gnome.Calendar": "",
+    "thunderbird": "󰇮",
+    // --- Graphics & Visual ---
+    "xdg-desktop-portal-gtk": "",
+    "nautilus": "",
+    "yazi": "󰇥",
+    "imv": "󰄄",
+    "swappy": "󰄄",
+    "org.gnome.FileRoller": "",
+    "vlc": "󰕼",
+    "mpv": "󰕼",
+    // --- System ---
+    "blueman-manager": "",
+    "pavucontrol": "󱕂",
+    "nm-connection-editor": "󰐻",
+    // --- Tool ---
+    "nwg-look": "󰒓",
+    "qt5ct": "󰒓",
+    "qt6ct": "󰒓",
+    "designer": "󰒓",
+    "linguist": "󰒓",
+    "assistant": "󰒓",
+    "pixeltool": "󰒓",
+    "qdbusviewer": "󰒓"
+  }
+}
