@@ -46,19 +46,7 @@ Scope {
                     anchors.centerIn: parent
                     spacing: 6
 
-                    WifiWidget {
-                        barWindow: barWindow
-                    }
-
-                    BluetoothWidget {
-                        barWindow: barWindow
-                    }
-
                     ClockWidget {
-                        barWindow: barWindow
-                    }
-
-                    VolumeWidget {
                         barWindow: barWindow
                     }
 
@@ -74,7 +62,19 @@ Scope {
                     anchors.right: parent.right
                     anchors.rightMargin: 14
                     anchors.verticalCenter: parent.verticalCenter
-                    spacing: 15
+                    spacing: 5
+
+                    WifiWidget {
+                        barWindow: barWindow
+                    }
+
+                    BluetoothWidget {
+                        barWindow: barWindow
+                    }
+
+                    VolumeWidget {
+                        barWindow: barWindow
+                    }
 
                     PowerWidget {}
                 }

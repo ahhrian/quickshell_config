@@ -24,25 +24,21 @@ PopupWindow {
     grabFocus: true
 
     property int targetHeight: 88
-    property real animatedHeight: 33
-    property bool animating: false
-
-    Behavior on animatedHeight {
-        enabled: root.animating
-        NumberAnimation {
-            duration: 250
-            easing.type: Easing.OutCubic
-        }
-    }
+    property int targetWidth: 240
+    property real collapsedWidth: targetWidth
+    property int animationDuration: 100
+    property real expansionProgress: 0
+    readonly property real animatedWidth: collapsedWidth + (targetWidth - collapsedWidth) * expansionProgress
+    readonly property real animatedHeight: 33 + (targetHeight - 33) * expansionProgress
 
     onVisibleChanged: {
         if (visible) {
-            animating = false;
-            animatedHeight = 33;
+            expansionProgress = 0;
             openTimer.restart();
         } else {
-            animating = false;
-            animatedHeight = 33;
+            openTimer.stop();
+            openAnimation.stop();
+            expansionProgress = 0;
         }
     }
 
@@ -50,10 +46,17 @@ PopupWindow {
         id: openTimer
         interval: 16
         repeat: false
-        onTriggered: {
-            root.animating = true;
-            root.animatedHeight = root.targetHeight;
-        }
+        onTriggered: openAnimation.start()
+    }
+
+    NumberAnimation {
+        id: openAnimation
+        target: root
+        property: "expansionProgress"
+        from: 0
+        to: 1
+        duration: root.animationDuration
+        easing.type: Easing.OutCubic
     }
 
 
@@ -86,7 +89,7 @@ PopupWindow {
         id: card
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        width: anchorItem ? Math.min(anchorItem.width, root.implicitWidth) : root.implicitWidth
+        width: root.animatedWidth
         height: root.animatedHeight
         radius: 18
         color: "#202020"

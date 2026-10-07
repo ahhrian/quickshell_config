@@ -14,18 +14,11 @@ Item {
     readonly property bool anyOpen: calendarPopup.visible || clockGuiPopup.visible
     readonly property int compactWidth: timeText.implicitWidth + 34
 
-    implicitWidth: calendarPopup.visible ? 240 : (clockGuiPopup.visible ? 280 : compactWidth)
+    implicitWidth: calendarPopup.visible ? calendarPopup.animatedWidth : (clockGuiPopup.visible ? clockGuiPopup.animatedWidth : compactWidth)
     implicitHeight: 33
 
     Layout.preferredWidth: implicitWidth
     Layout.alignment: Qt.AlignVCenter
-
-    Behavior on implicitWidth {
-        NumberAnimation {
-            duration: 250
-            easing.type: Easing.OutCubic
-        }
-    }
 
     Rectangle {
         id: pill
@@ -33,13 +26,15 @@ Item {
         radius: height / 2
         color: mouseArea.containsMouse ? "#3c3c3c" : "#343434"
 
+        // Do not let the fading pill expand underneath an open popup.
+        visible: !root.anyOpen
         opacity: root.anyOpen ? 0.0 : 1.0
 
         Behavior on color {
-            ColorAnimation { duration: 150 }
+            ColorAnimation { duration: 75 }
         }
         Behavior on opacity {
-            NumberAnimation { duration: 150 }
+            NumberAnimation { duration: 75 }
         }
 
         Text {
@@ -57,12 +52,14 @@ Item {
         id: calendarPopup
         barWindow: root.barWindow
         anchorItem: root
+        collapsedWidth: root.compactWidth
     }
 
     ClockGui {
         id: clockGuiPopup
         barWindow: root.barWindow
         anchorItem: root
+        collapsedWidth: root.compactWidth
     }
 
     MouseArea {

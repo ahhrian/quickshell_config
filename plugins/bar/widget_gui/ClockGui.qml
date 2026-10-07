@@ -18,15 +18,19 @@ PopupWindow {
     anchor.adjustment: PopupAdjustment.SlideX | PopupAdjustment.SlideY
 
     implicitWidth: 280
-    implicitHeight: 330
+    implicitHeight: 282
 
     color: "transparent"
     visible: false
     grabFocus: true
 
-    property int targetHeight: 330
-    property real animatedHeight: 33
-    property bool animating: false
+    property int targetHeight: 282
+    property int targetWidth: 280
+    property real collapsedWidth: targetWidth
+    property int animationDuration: 100
+    property real expansionProgress: 0
+    readonly property real animatedWidth: collapsedWidth + (targetWidth - collapsedWidth) * expansionProgress
+    readonly property real animatedHeight: 33 + (targetHeight - 33) * expansionProgress
 
     property int viewYear: new Date().getFullYear()
     property int viewMonth: new Date().getMonth()
@@ -60,23 +64,15 @@ PopupWindow {
         viewMonth = today.getMonth();
     }
 
-    Behavior on animatedHeight {
-        enabled: root.animating
-        NumberAnimation {
-            duration: 250
-            easing.type: Easing.OutCubic
-        }
-    }
-
     onVisibleChanged: {
         if (visible) {
             resetToToday();
-            animating = false;
-            animatedHeight = 33;
+            expansionProgress = 0;
             openTimer.restart();
         } else {
-            animating = false;
-            animatedHeight = 33;
+            openTimer.stop();
+            openAnimation.stop();
+            expansionProgress = 0;
         }
     }
 
@@ -84,10 +80,17 @@ PopupWindow {
         id: openTimer
         interval: 16
         repeat: false
-        onTriggered: {
-            root.animating = true;
-            root.animatedHeight = root.targetHeight;
-        }
+        onTriggered: openAnimation.start()
+    }
+
+    NumberAnimation {
+        id: openAnimation
+        target: root
+        property: "expansionProgress"
+        from: 0
+        to: 1
+        duration: root.animationDuration
+        easing.type: Easing.OutCubic
     }
 
 
@@ -146,7 +149,7 @@ PopupWindow {
         id: card
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        width: anchorItem ? Math.min(anchorItem.width, root.implicitWidth) : root.implicitWidth
+        width: root.animatedWidth
         height: root.animatedHeight
         radius: 18
         color: "#202020"
@@ -266,7 +269,9 @@ PopupWindow {
                 opacity: Math.max(0, Math.min(1, (root.animatedHeight - 50) / 40))
 
                 ColumnLayout {
-                    anchors.fill: parent
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.right: parent.right
                     spacing: 4
 
                     // Days of week header
@@ -305,7 +310,10 @@ PopupWindow {
                     // Calendar month grid
                     GridLayout {
                         Layout.fillWidth: true
-                        Layout.fillHeight: true
+                        Layout.preferredHeight: {
+                            const rows = Math.ceil(root.calendarCells.length / 7);
+                            return rows * 28 + Math.max(0, rows - 1) * rowSpacing;
+                        }
                         columns: 7
                         rowSpacing: 2
                         columnSpacing: 0
