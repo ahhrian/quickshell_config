@@ -13,8 +13,33 @@ Item {
 
     readonly property bool anyOpen: calendarPopup.visible || clockGuiPopup.visible
     readonly property int compactWidth: timeText.implicitWidth + 34
+    property var pendingPopup: null
 
-    implicitWidth: calendarPopup.visible ? calendarPopup.animatedWidth : (clockGuiPopup.visible ? clockGuiPopup.animatedWidth : compactWidth)
+    function togglePopup(popup) {
+        const current = calendarPopup.visible ? calendarPopup : (clockGuiPopup.visible ? clockGuiPopup : null);
+        pendingPopup = null;
+        if (current === popup) {
+            if (popup.closing)
+                popup.openPopup();
+            else
+                popup.closePopup();
+        } else if (current) {
+            pendingPopup = popup;
+            current.closePopup();
+        } else {
+            popup.openPopup();
+        }
+    }
+
+    function finishClose() {
+        const next = pendingPopup;
+        pendingPopup = null;
+        if (next)
+            next.openPopup();
+    }
+
+    // Keep the popup anchor stationary; expansion belongs to the popup surface.
+    implicitWidth: compactWidth
     implicitHeight: 33
 
     Layout.preferredWidth: implicitWidth
@@ -26,15 +51,11 @@ Item {
         radius: height / 2
         color: mouseArea.containsMouse ? "#3c3c3c" : "#343434"
 
-        // Do not let the fading pill expand underneath an open popup.
+        // Hand off immediately so the pill cannot ghost underneath the popup.
         visible: !root.anyOpen
-        opacity: root.anyOpen ? 0.0 : 1.0
 
         Behavior on color {
             ColorAnimation { duration: 75 }
-        }
-        Behavior on opacity {
-            NumberAnimation { duration: 75 }
         }
 
         Text {
@@ -53,6 +74,8 @@ Item {
         barWindow: root.barWindow
         anchorItem: root
         collapsedWidth: root.compactWidth
+        collapsedColor: mouseArea.containsMouse ? "#3c3c3c" : "#343434"
+        onCloseFinished: root.finishClose()
     }
 
     ClockGui {
@@ -60,6 +83,8 @@ Item {
         barWindow: root.barWindow
         anchorItem: root
         collapsedWidth: root.compactWidth
+        collapsedColor: mouseArea.containsMouse ? "#3c3c3c" : "#343434"
+        onCloseFinished: root.finishClose()
     }
 
     MouseArea {
@@ -70,13 +95,7 @@ Item {
         acceptedButtons: Qt.LeftButton | Qt.RightButton
 
         onClicked: (mouse) => {
-            if (mouse.button === Qt.RightButton) {
-                clockGuiPopup.visible = false;
-                calendarPopup.visible = !calendarPopup.visible;
-            } else {
-                calendarPopup.visible = false;
-                clockGuiPopup.visible = !clockGuiPopup.visible;
-            }
+            root.togglePopup(mouse.button === Qt.RightButton ? calendarPopup : clockGuiPopup);
         }
     }
 }

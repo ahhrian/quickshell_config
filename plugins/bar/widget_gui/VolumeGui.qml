@@ -6,38 +6,23 @@ import Quickshell
 import "../../../services"
 import "../../../shared"
 
-PopupWindow {
+LeftExpandingPopup {
     id: root
 
-    property var barWindow: null
-    property var anchorItem: null
+    targetWidth: 350
+    maximumHeight: 520
+    targetHeight: Math.min(card.implicitHeight, maximumHeight)
+    borderColor: "#3d3d3d"
 
-    anchor.window: barWindow
-    anchor.rect.x: anchorItem ? Math.max(10, Math.min((barWindow ? barWindow.width : 1920) - implicitWidth - 10, anchorItem.mapToItem(null, 0, 0).x + anchorItem.width - implicitWidth)) : 500
-    anchor.rect.y: barWindow ? barWindow.height + 6 : 46
-    anchor.adjustment: PopupAdjustment.SlideX | PopupAdjustment.SlideY
-
-    implicitWidth: 350
-    implicitHeight: Math.min(card.implicitHeight, 520)
-
-    color: "transparent"
-    visible: false
-    grabFocus: true
-
-    onVisibleChanged: {
+    onAboutToOpen: {
         if (visible) {
             Audio.recheck();
         }
     }
 
-    Rectangle {
+    Item {
         id: card
         anchors.fill: parent
-        color: "#303030"
-        radius: 16
-        border.width: 1
-        border.color: "#3d3d3d"
-        clip: true
 
         implicitHeight: contentColumn.implicitHeight + 32
 

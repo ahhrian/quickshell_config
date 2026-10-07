@@ -6,22 +6,11 @@ import "../../../services"
 import "../../../shared"
 import "../widget_gui"
 
-Rectangle {
+TrayDropdownWidget {
     id: root
 
-    property var barWindow: null
-
-    implicitWidth: 33
-    implicitHeight: 33
-    radius: height / 2
-
-    color: mouseArea.containsMouse || (btDropdown && btDropdown.visible) ? "#343434" : "#303030"
-
-    Behavior on color {
-        ColorAnimation {
-            duration: 150
-        }
-    }
+    dropdown: btDropdown
+    hovered: mouseArea.containsMouse
 
     Text {
         id: iconText
@@ -36,6 +25,8 @@ Rectangle {
         id: btDropdown
         barWindow: root.barWindow
         anchorItem: root
+        compactIcon: Bluetooth.icon
+        compactColor: root.pillColor
     }
 
     MouseArea {
@@ -45,7 +36,7 @@ Rectangle {
         cursorShape: Qt.PointingHandCursor
 
         onClicked: {
-            btDropdown.visible = !btDropdown.visible;
+            root.toggleDropdown();
         }
     }
 }

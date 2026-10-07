@@ -25,6 +25,8 @@ Scope {
 
                 color: "transparent"
 
+                DropdownController { id: rightDropdownController }
+
                 // Left-side Modules
                 RowLayout {
                     id: left_layout
@@ -56,27 +58,43 @@ Scope {
                 }
 
                 // Right-Side Modules
-                RowLayout {
+                Item {
                     id: right_layout
 
                     anchors.right: parent.right
                     anchors.rightMargin: 14
                     anchors.verticalCenter: parent.verticalCenter
-                    spacing: 5
+                    implicitWidth: wifiWidget.width + bluetoothWidget.width + volumeWidget.width + powerWidget.width + 15
+                    implicitHeight: 33
 
                     WifiWidget {
+                        id: wifiWidget
+                        anchors.right: bluetoothWidget.left
+                        anchors.rightMargin: 5
                         barWindow: barWindow
+                        dropdownController: rightDropdownController
                     }
 
                     BluetoothWidget {
+                        id: bluetoothWidget
+                        anchors.right: volumeWidget.left
+                        anchors.rightMargin: 5
                         barWindow: barWindow
+                        dropdownController: rightDropdownController
                     }
 
                     VolumeWidget {
+                        id: volumeWidget
+                        anchors.right: powerWidget.left
+                        anchors.rightMargin: 5
                         barWindow: barWindow
+                        dropdownController: rightDropdownController
                     }
 
-                    PowerWidget {}
+                    PowerWidget {
+                        id: powerWidget
+                        anchors.right: parent.right
+                    }
                 }
             }
 

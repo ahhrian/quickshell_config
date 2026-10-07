@@ -6,22 +6,11 @@ import "../../../services"
 import "../../../shared"
 import "../widget_gui"
 
-Rectangle {
+TrayDropdownWidget {
     id: root
 
-    property var barWindow: null
-
-    implicitWidth: 33
-    implicitHeight: 33
-    radius: height / 2
-
-    color: mouseArea.containsMouse || (wifiDropdown && wifiDropdown.visible) ? "#343434" : "#303030"
-
-    Behavior on color {
-        ColorAnimation {
-            duration: 150
-        }
-    }
+    dropdown: wifiDropdown
+    hovered: mouseArea.containsMouse
 
     Text {
         id: iconText
@@ -36,6 +25,8 @@ Rectangle {
         id: wifiDropdown
         barWindow: root.barWindow
         anchorItem: root
+        compactIcon: Wifi.icon
+        compactColor: root.pillColor
     }
 
     MouseArea {
@@ -49,7 +40,7 @@ Rectangle {
             if (mouse.button === Qt.RightButton) {
                 Wifi.openHiddenNetworkDialog();
             } else {
-                wifiDropdown.visible = !wifiDropdown.visible;
+                root.toggleDropdown();
             }
         }
     }

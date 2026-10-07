@@ -5,22 +5,11 @@ import "../../../services"
 import "../../../shared"
 import "../widget_gui"
 
-Rectangle {
+TrayDropdownWidget {
     id: root
 
-    property var barWindow: null
-
-    implicitWidth: 33
-    implicitHeight: 33
-    radius: height / 2
-
-    color: mouseArea.containsMouse || (volumeDropdown && volumeDropdown.visible) ? "#343434" : "#303030"
-
-    Behavior on color {
-        ColorAnimation {
-            duration: 150
-        }
-    }
+    dropdown: volumeDropdown
+    hovered: mouseArea.containsMouse
 
     readonly property real currentVolume: Audio.volume
     property real animatedVolume: currentVolume
@@ -100,6 +89,9 @@ Rectangle {
         id: volumeDropdown
         barWindow: root.barWindow
         anchorItem: root
+        compactIcon: Audio.icon
+        compactIconColor: Audio.muted ? "#909090" : "#e8e8e8"
+        compactColor: root.pillColor
     }
 
     MouseArea {
@@ -113,7 +105,7 @@ Rectangle {
             if (mouse.button === Qt.RightButton) {
                 Audio.toggleMute();
             } else {
-                volumeDropdown.visible = !volumeDropdown.visible;
+                root.toggleDropdown();
             }
         }
 
