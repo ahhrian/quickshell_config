@@ -54,15 +54,17 @@ Scope {
                         barWindow: barWindow
                     }
 
-                    ClockWidget {}
+                    ClockWidget {
+                        barWindow: barWindow
+                    }
 
                     VolumeWidget {
                         barWindow: barWindow
                     }
 
-                    NotificationWidget {
-                        barWindow: barWindow
-                    }
+                    // NotificationWidget {
+                    //     barWindow: barWindow
+                    // }
                 }
 
                 // Right-Side Modules

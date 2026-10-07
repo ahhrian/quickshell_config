@@ -15,7 +15,7 @@ Rectangle {
     implicitHeight: 33
     radius: height / 2
 
-    color: mouseArea.containsMouse || (btDropdown && btDropdown.visible) ? "#2a2a2a" : "#1a1a1a"
+    color: mouseArea.containsMouse || (btDropdown && btDropdown.visible) ? "#343434" : "#303030"
 
     Behavior on color {
         ColorAnimation {
@@ -27,7 +27,7 @@ Rectangle {
         id: iconText
         anchors.centerIn: parent
         text: Bluetooth.icon
-        color: "#ffffff"
+        color: "#e8e8e8"
         font.family: "Material Symbols Rounded"
         font.pixelSize: 16
     }

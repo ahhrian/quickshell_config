@@ -50,10 +50,10 @@ PopupWindow {
     Rectangle {
         id: card
         anchors.fill: parent
-        color: "#1a1a1a"
+        color: "#303030"
         radius: 16
         border.width: 1
-        border.color: "#333333"
+        border.color: "#3d3d3d"
         clip: true
 
         implicitHeight: contentColumn.implicitHeight + 32
@@ -74,7 +74,7 @@ PopupWindow {
                     width: 40
                     height: 40
                     radius: 20
-                    color: "#252525"
+                    color: "#303030"
 
                     Text {
                         anchors.centerIn: parent
@@ -101,7 +101,7 @@ PopupWindow {
                         font.family: "SF Pro Display"
                         font.bold: true
                         font.pixelSize: 16
-                        color: "#ffffff"
+                        color: "#e8e8e8"
                         elide: Text.ElideRight
                         Layout.fillWidth: true
                     }
@@ -118,7 +118,7 @@ PopupWindow {
                         }
                         font.family: "SF Pro Display"
                         font.pixelSize: 12
-                        color: "#ffffff"
+                        color: "#e8e8e8"
                         opacity: 0.65
                         elide: Text.ElideRight
                         Layout.fillWidth: true
@@ -130,7 +130,7 @@ PopupWindow {
                     width: 32
                     height: 32
                     radius: 16
-                    color: rescanMouse.containsMouse ? "#333333" : "transparent"
+                    color: rescanMouse.containsMouse ? "#3d3d3d" : "transparent"
                     visible: Bluetooth.enabled
 
                     Text {
@@ -138,7 +138,7 @@ PopupWindow {
                         text: "refresh"
                         font.family: "Material Symbols Rounded"
                         font.pixelSize: 18
-                        color: "#ffffff"
+                        color: "#e8e8e8"
                         opacity: Bluetooth.scanning ? 0.4 : 0.8
                     }
 
@@ -157,7 +157,7 @@ PopupWindow {
                     width: 46
                     height: 24
                     radius: 12
-                    color: Bluetooth.enabled ? Theme.colors.secondary_accent : "#333333"
+                    color: Bluetooth.enabled ? Theme.colors.secondary_accent : "#3d3d3d"
 
                     Behavior on color {
                         ColorAnimation { duration: 180 }
@@ -168,7 +168,7 @@ PopupWindow {
                         width: 20
                         height: 20
                         radius: 10
-                        color: "#ffffff"
+                        color: "#e8e8e8"
                         y: 2
                         x: Bluetooth.enabled ? 24 : 2
 
@@ -192,7 +192,7 @@ PopupWindow {
             Rectangle {
                 Layout.fillWidth: true
                 height: 1
-                color: "#333333"
+                color: "#3d3d3d"
             }
 
             // ==================== 3. DISABLED PLACEHOLDER ====================
@@ -217,7 +217,7 @@ PopupWindow {
                         text: "Bluetooth is turned off"
                         font.family: "SF Pro Display"
                         font.pixelSize: 14
-                        color: "#ffffff"
+                        color: "#e8e8e8"
                         opacity: 0.7
                         Layout.alignment: Qt.AlignHCenter
                     }
@@ -235,7 +235,7 @@ PopupWindow {
                             font.family: "SF Pro Display"
                             font.bold: true
                             font.pixelSize: 12
-                            color: "#1a1a1a"
+                            color: "#303030"
                         }
 
                         MouseArea {
@@ -305,7 +305,7 @@ PopupWindow {
                                 id: pairedCard
                                 Layout.fillWidth: true
                                 radius: 10
-                                color: modelData.connected ? "#252525" : (pairedMouse.containsMouse ? "#252525" : "transparent")
+                                color: modelData.connected ? "#303030" : (pairedMouse.containsMouse ? "#303030" : "transparent")
                                 border.width: modelData.connected ? 1 : 0
                                 border.color: Theme.colors.secondary_accent
 
@@ -338,7 +338,7 @@ PopupWindow {
                                             text: root.getDeviceMaterialIcon(modelData.icon)
                                             font.family: "Material Symbols Rounded"
                                             font.pixelSize: 20
-                                            color: modelData.connected ? Theme.colors.secondary_accent : "#ffffff"
+                                            color: modelData.connected ? Theme.colors.secondary_accent : "#e8e8e8"
                                             Layout.alignment: Qt.AlignVCenter
                                         }
 
@@ -352,7 +352,7 @@ PopupWindow {
                                                 font.family: "SF Pro Display"
                                                 font.bold: modelData.connected
                                                 font.pixelSize: 13
-                                                color: "#ffffff"
+                                                color: "#e8e8e8"
                                                 elide: Text.ElideRight
                                                 Layout.fillWidth: true
                                             }
@@ -395,7 +395,7 @@ PopupWindow {
                                         Rectangle {
                                             Layout.fillWidth: true
                                             height: 1
-                                            color: "#333333"
+                                            color: "#3d3d3d"
                                         }
 
                                         RowLayout {
@@ -424,7 +424,7 @@ PopupWindow {
                                                     font.family: "SF Pro Display"
                                                     font.bold: true
                                                     font.pixelSize: 11
-                                                    color: "#1a1a1a"
+                                                    color: "#303030"
                                                 }
 
                                                 MouseArea {
@@ -448,7 +448,7 @@ PopupWindow {
                                                     font.family: "SF Pro Display"
                                                     font.bold: true
                                                     font.pixelSize: 11
-                                                    color: "#ffffff"
+                                                    color: "#e8e8e8"
                                                 }
 
                                                 MouseArea {
@@ -463,14 +463,14 @@ PopupWindow {
                                                 width: 65
                                                 height: 26
                                                 radius: 6
-                                                color: "#333333"
+                                                color: "#3d3d3d"
 
                                                 Text {
                                                     anchors.centerIn: parent
                                                     text: "Forget"
                                                     font.family: "SF Pro Display"
                                                     font.pixelSize: 11
-                                                    color: "#ffffff"
+                                                    color: "#e8e8e8"
                                                 }
 
                                                 MouseArea {
@@ -534,7 +534,7 @@ PopupWindow {
                             Layout.fillWidth: true
                             height: 60
                             radius: 10
-                            color: "#252525"
+                            color: "#303030"
                             visible: Bluetooth.availableDevices.length === 0
 
                             RowLayout {
@@ -552,7 +552,7 @@ PopupWindow {
                                     text: Bluetooth.scanning ? "Scanning for nearby devices..." : "No nearby devices found. Tap refresh to scan."
                                     font.family: "SF Pro Display"
                                     font.pixelSize: 12
-                                    color: "#ffffff"
+                                    color: "#e8e8e8"
                                     opacity: 0.6
                                 }
                             }
@@ -566,7 +566,7 @@ PopupWindow {
                                 id: availCard
                                 Layout.fillWidth: true
                                 radius: 10
-                                color: availMouse.containsMouse ? "#252525" : "transparent"
+                                color: availMouse.containsMouse ? "#303030" : "transparent"
 
                                 readonly property bool isExpanded: (root.expandedMac === modelData.mac)
 
@@ -597,7 +597,7 @@ PopupWindow {
                                             text: root.getDeviceMaterialIcon(modelData.icon)
                                             font.family: "Material Symbols Rounded"
                                             font.pixelSize: 20
-                                            color: "#ffffff"
+                                            color: "#e8e8e8"
                                             Layout.alignment: Qt.AlignVCenter
                                         }
 
@@ -610,7 +610,7 @@ PopupWindow {
                                                 text: modelData.name || modelData.mac
                                                 font.family: "SF Pro Display"
                                                 font.pixelSize: 13
-                                                color: "#ffffff"
+                                                color: "#e8e8e8"
                                                 elide: Text.ElideRight
                                                 Layout.fillWidth: true
                                             }
@@ -643,7 +643,7 @@ PopupWindow {
                                         Rectangle {
                                             Layout.fillWidth: true
                                             height: 1
-                                            color: "#333333"
+                                            color: "#3d3d3d"
                                         }
 
                                         RowLayout {
@@ -670,7 +670,7 @@ PopupWindow {
                                                     font.family: "SF Pro Display"
                                                     font.bold: true
                                                     font.pixelSize: 11
-                                                    color: "#1a1a1a"
+                                                    color: "#303030"
                                                 }
 
                                                 MouseArea {

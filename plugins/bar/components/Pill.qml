@@ -7,8 +7,9 @@ Rectangle {
     id: root
 
     property string icon: ""
-    property color iconColor: "#ffffff"
+    property color iconColor: "#e8e8e8"
     property string label: ""
+    property bool labelBold: false
     property int maxLabelWidth: 400
     // Extra horizontal padding on top of the base 22px — used by ClockWidget to make it wider
     property int extraPadding: 0
@@ -20,7 +21,8 @@ Rectangle {
     implicitHeight: 33
     radius: height / 2
 
-    color: "#1a1a1a"
+    // color: "#303030"
+    color: "#343434"
 
     // Native border support for the focused-workspace accent ring
     property color borderColor: "transparent"
@@ -44,6 +46,7 @@ Rectangle {
             text: root.label
             color: root.iconColor
             font.family: "SF Pro Display"
+            font.bold: root.labelBold
             font.pixelSize: 16
             elide: Text.ElideRight
             Layout.maximumWidth: root.maxLabelWidth

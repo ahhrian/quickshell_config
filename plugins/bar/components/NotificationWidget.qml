@@ -15,7 +15,7 @@ Rectangle {
     implicitHeight: 33
     radius: height / 2
 
-    color: mouseArea.containsMouse || (notifDropdown && notifDropdown.visible) ? "#2a2a2a" : "#1a1a1a"
+    color: mouseArea.containsMouse || (notifDropdown && notifDropdown.visible) ? "#343434" : "#303030"
 
     Behavior on color {
         ColorAnimation {
@@ -36,7 +36,7 @@ Rectangle {
         }
 
         // Bar icon stays white; accent/status colors live in the dropdown only
-        color: "#ffffff"
+        color: "#e8e8e8"
         opacity: Notifications.dnd ? 0.45 : 1.0
 
         Behavior on opacity {

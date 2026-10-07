@@ -42,10 +42,10 @@ PopupWindow {
     Rectangle {
         id: card
         anchors.fill: parent
-        color: "#1a1a1a"
+        color: "#303030"
         radius: 16
         border.width: 1
-        border.color: "#2a2a2a"
+        border.color: "#343434"
         clip: true
 
         implicitHeight: contentColumn.implicitHeight + 32
@@ -66,7 +66,7 @@ PopupWindow {
                     width: 40
                     height: 40
                     radius: 20
-                    color: Wifi.enabled && Wifi.connected ? "#252525" : "#252525"
+                    color: Wifi.enabled && Wifi.connected ? "#303030" : "#303030"
 
                     Text {
                         anchors.centerIn: parent
@@ -87,7 +87,7 @@ PopupWindow {
                         font.family: "SF Pro Display"
                         font.bold: true
                         font.pixelSize: 16
-                        color: "#ffffff"
+                        color: "#e8e8e8"
                         elide: Text.ElideRight
                         Layout.fillWidth: true
                     }
@@ -105,7 +105,7 @@ PopupWindow {
                         }
                         font.family: "SF Pro Display"
                         font.pixelSize: 12
-                        color: "#ffffff"
+                        color: "#e8e8e8"
                         opacity: 0.65
                         elide: Text.ElideRight
                         Layout.fillWidth: true
@@ -117,7 +117,7 @@ PopupWindow {
                     width: 32
                     height: 32
                     radius: 16
-                    color: rescanMouse.containsMouse ? "#333333" : "transparent"
+                    color: rescanMouse.containsMouse ? "#3d3d3d" : "transparent"
                     visible: Wifi.enabled
 
                     Text {
@@ -125,7 +125,7 @@ PopupWindow {
                         text: "refresh"
                         font.family: "Material Symbols Rounded"
                         font.pixelSize: 18
-                        color: "#ffffff"
+                        color: "#e8e8e8"
                         opacity: Wifi.scanning ? 0.4 : 0.8
                     }
 
@@ -144,7 +144,7 @@ PopupWindow {
                     width: 46
                     height: 24
                     radius: 12
-                    color: Wifi.enabled ? Theme.colors.secondary_accent : "#333333"
+                    color: Wifi.enabled ? Theme.colors.secondary_accent : "#3d3d3d"
 
                     Behavior on color {
                         ColorAnimation { duration: 180 }
@@ -155,7 +155,7 @@ PopupWindow {
                         width: 20
                         height: 20
                         radius: 10
-                        color: "#ffffff"
+                        color: "#e8e8e8"
                         y: 2
                         x: Wifi.enabled ? 24 : 2
 
@@ -179,7 +179,7 @@ PopupWindow {
             Rectangle {
                 Layout.fillWidth: true
                 height: 1
-                color: "#333333"
+                color: "#3d3d3d"
             }
 
             // ==================== 3. NETWORKS CONTAINER ====================
@@ -205,7 +205,7 @@ PopupWindow {
                         text: "Wi-Fi is turned off"
                         font.family: "SF Pro Display"
                         font.pixelSize: 14
-                        color: "#ffffff"
+                        color: "#e8e8e8"
                         opacity: 0.7
                         Layout.alignment: Qt.AlignHCenter
                     }
@@ -223,7 +223,7 @@ PopupWindow {
                             font.family: "SF Pro Display"
                             font.bold: true
                             font.pixelSize: 12
-                            color: "#1a1a1a"
+                            color: "#303030"
                         }
 
                         MouseArea {
@@ -272,7 +272,7 @@ PopupWindow {
                                 id: knownPill
                                 Layout.fillWidth: true
                                 radius: 10
-                                color: modelData.connected ? "#252525" : (knownMouse.containsMouse ? "#252525" : "transparent")
+                                color: modelData.connected ? "#303030" : (knownMouse.containsMouse ? "#303030" : "transparent")
                                 border.width: modelData.connected ? 1 : 0
                                 border.color: Theme.colors.secondary_accent
 
@@ -305,7 +305,7 @@ PopupWindow {
                                             text: root.getSignalIcon(modelData.signal)
                                             font.family: "Material Symbols Rounded"
                                             font.pixelSize: 18
-                                            color: modelData.connected ? Theme.colors.secondary_accent : "#ffffff"
+                                            color: modelData.connected ? Theme.colors.secondary_accent : "#e8e8e8"
                                             Layout.alignment: Qt.AlignVCenter
                                         }
 
@@ -319,7 +319,7 @@ PopupWindow {
                                                 font.family: "SF Pro Display"
                                                 font.bold: modelData.connected
                                                 font.pixelSize: 13
-                                                color: "#ffffff"
+                                                color: "#e8e8e8"
                                                 elide: Text.ElideRight
                                                 Layout.fillWidth: true
                                             }
@@ -353,7 +353,7 @@ PopupWindow {
                                         Rectangle {
                                             Layout.fillWidth: true
                                             height: 1
-                                            color: "#333333"
+                                            color: "#3d3d3d"
                                         }
 
                                         RowLayout {
@@ -382,7 +382,7 @@ PopupWindow {
                                                     font.family: "SF Pro Display"
                                                     font.bold: true
                                                     font.pixelSize: 11
-                                                    color: "#1a1a1a"
+                                                    color: "#303030"
                                                 }
 
                                                 MouseArea {
@@ -406,7 +406,7 @@ PopupWindow {
                                                     font.family: "SF Pro Display"
                                                     font.bold: true
                                                     font.pixelSize: 11
-                                                    color: "#ffffff"
+                                                    color: "#e8e8e8"
                                                 }
 
                                                 MouseArea {
@@ -421,14 +421,14 @@ PopupWindow {
                                                 width: 65
                                                 height: 26
                                                 radius: 6
-                                                color: "#333333"
+                                                color: "#3d3d3d"
 
                                                 Text {
                                                     anchors.centerIn: parent
                                                     text: "Forget"
                                                     font.family: "SF Pro Display"
                                                     font.pixelSize: 11
-                                                    color: "#ffffff"
+                                                    color: "#e8e8e8"
                                                 }
 
                                                 MouseArea {
@@ -482,7 +482,7 @@ PopupWindow {
                                 implicitWidth: hiddenRow.implicitWidth + 12
                                 implicitHeight: 22
                                 radius: 11
-                                color: hiddenMouse.containsMouse ? "#333333" : "#252525"
+                                color: hiddenMouse.containsMouse ? "#3d3d3d" : "#303030"
 
                                 RowLayout {
                                     id: hiddenRow
@@ -499,7 +499,7 @@ PopupWindow {
                                         text: "Hidden..."
                                         font.family: "SF Pro Display"
                                         font.pixelSize: 11
-                                        color: "#ffffff"
+                                        color: "#e8e8e8"
                                     }
                                 }
 
@@ -533,7 +533,7 @@ PopupWindow {
                                 id: availPill
                                 Layout.fillWidth: true
                                 radius: 10
-                                color: availMouse.containsMouse || isExpanded ? "#252525" : "transparent"
+                                color: availMouse.containsMouse || isExpanded ? "#303030" : "transparent"
 
                                 readonly property bool isExpanded: (root.expandedSsid === modelData.ssid)
 
@@ -564,7 +564,7 @@ PopupWindow {
                                             text: root.getSignalIcon(modelData.signal)
                                             font.family: "Material Symbols Rounded"
                                             font.pixelSize: 18
-                                            color: "#ffffff"
+                                            color: "#e8e8e8"
                                             Layout.alignment: Qt.AlignVCenter
                                         }
 
@@ -577,7 +577,7 @@ PopupWindow {
                                                 text: modelData.ssid
                                                 font.family: "SF Pro Display"
                                                 font.pixelSize: 13
-                                                color: "#ffffff"
+                                                color: "#e8e8e8"
                                                 elide: Text.ElideRight
                                                 Layout.fillWidth: true
                                             }
@@ -611,7 +611,7 @@ PopupWindow {
                                         Rectangle {
                                             Layout.fillWidth: true
                                             height: 1
-                                            color: "#333333"
+                                            color: "#3d3d3d"
                                         }
 
                                         // Password input if secured
@@ -619,7 +619,7 @@ PopupWindow {
                                             Layout.fillWidth: true
                                             height: 32
                                             radius: 6
-                                            color: "#1a1a1a"
+                                            color: "#303030"
                                             border.width: 1
                                             border.color: pwdInput.activeFocus ? Theme.colors.secondary_accent : "#3d3d3d"
                                             visible: modelData.secure
@@ -634,7 +634,7 @@ PopupWindow {
                                                     Layout.fillWidth: true
                                                     font.family: "SF Pro Display"
                                                     font.pixelSize: 12
-                                                    color: "#ffffff"
+                                                    color: "#e8e8e8"
                                                     echoMode: root.showPassword ? TextInput.Normal : TextInput.Password
                                                     text: root.passwordInput
                                                     onTextChanged: root.passwordInput = text
@@ -682,14 +682,14 @@ PopupWindow {
                                                 width: 60
                                                 height: 26
                                                 radius: 6
-                                                color: "#333333"
+                                                color: "#3d3d3d"
 
                                                 Text {
                                                     anchors.centerIn: parent
                                                     text: "Cancel"
                                                     font.family: "SF Pro Display"
                                                     font.pixelSize: 11
-                                                    color: "#ffffff"
+                                                    color: "#e8e8e8"
                                                 }
 
                                                 MouseArea {
@@ -711,7 +711,7 @@ PopupWindow {
                                                     font.family: "SF Pro Display"
                                                     font.bold: true
                                                     font.pixelSize: 11
-                                                    color: "#1a1a1a"
+                                                    color: "#303030"
                                                 }
 
                                                 MouseArea {
