@@ -7,18 +7,26 @@ Rectangle {
     id: root
 
     property string icon: ""
-    property color iconColor: Theme.colors.fg
+    property color iconColor: "#ffffff"
     property string label: ""
     property int maxLabelWidth: 400
+    // Extra horizontal padding on top of the base 22px — used by ClockWidget to make it wider
+    property int extraPadding: 0
 
     // Any children declared inside `Pill { ... }` will be inserted directly into `row`
     default property alias content: row.data
 
-    implicitWidth: row.implicitWidth + 22
+    implicitWidth: row.implicitWidth + 22 + extraPadding
     implicitHeight: 33
     radius: height / 2
 
-    color: Theme.colors.bg0
+    color: "#1a1a1a"
+
+    // Native border support for the focused-workspace accent ring
+    property color borderColor: "transparent"
+    property int borderWidth: 0
+    border.color: borderColor
+    border.width: borderWidth
 
     RowLayout {
         id: row

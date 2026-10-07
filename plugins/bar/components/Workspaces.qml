@@ -18,6 +18,9 @@ Pill {
     implicitWidth: layout.implicitWidth + 16
     Layout.preferredWidth: implicitWidth
 
+    // Outer container pill is slightly darker than the inner workspace pills
+    color: "#111111"
+
     Behavior on implicitWidth {
         NumberAnimation {
             duration: 300
@@ -45,6 +48,16 @@ Pill {
                     const win = tops.find(t => t.address === addr || (t.address && addr.includes(t.address)));
                     if (win && win.workspace?.id) {
                         root.urgentWorkspaces.add(win.workspace.id);
+                    }
+
+                    // If the urgent window is already on the focused workspace,
+                    // suppress the urgency immediately — the user is already there.
+                    const focId = Hyprland.focusedWorkspace?.id;
+                    if (focId) {
+                        if (root.urgentWorkspaces.has(focId)) {
+                            root.urgentWorkspaces.delete(focId);
+                        }
+                        root.urgentAddresses.delete(addr);
                     }
                 }
                 Hyprland.refreshWorkspaces();
@@ -288,8 +301,9 @@ Pill {
         Layout.alignment: Qt.AlignCenter
         spacing: 5
 
-        readonly property color unfocused_color: Theme.colors.bg2
-        readonly property color focused_color: Theme.colors.default_accent
+        readonly property color unfocused_fill: "#252525"
+        readonly property color focused_fill: "#1a1a1a"
+        readonly property color focus_border: Theme.colors.default_accent
         readonly property int animDuration: 450
         readonly property var animEasing: Easing.OutCubic
         readonly property int focused_extra_width: 18
@@ -366,9 +380,28 @@ Pill {
                     return list;
                 }
 
-                color: isFocused ? layout.focused_color : layout.unfocused_color
+                // Fixed black fill — focused vs unfocused differ only slightly
+                color: isFocused ? layout.focused_fill : layout.unfocused_fill
 
                 Behavior on color {
+                    ColorAnimation {
+                        duration: layout.animDuration
+                        easing.type: layout.animEasing
+                    }
+                }
+
+                // Use the Pill's native border for the focus accent ring
+                // (follows the pill radius perfectly)
+                borderWidth: wsPill.isFocused ? 2 : 0
+                borderColor: wsPill.isFocused ? layout.focus_border : "transparent"
+
+                Behavior on borderWidth {
+                    NumberAnimation {
+                        duration: layout.animDuration
+                        easing.type: layout.animEasing
+                    }
+                }
+                Behavior on borderColor {
                     ColorAnimation {
                         duration: layout.animDuration
                         easing.type: layout.animEasing
@@ -382,7 +415,7 @@ Pill {
 
                     Text {
                         text: wsPill.wsId.toString()
-                        color: wsPill.isFocused ? Theme.colors.bg0 : (wsPill.isUrgent ? Theme.colors.red : Theme.colors.fg)
+                        color: wsPill.isUrgent ? Theme.colors.red : "#ffffff"
                         font.family: "SF Pro Display"
                         font.pixelSize: 14
                         Layout.alignment: Qt.AlignVCenter
@@ -415,7 +448,7 @@ Pill {
                                 text: modelData.isNerdFont ? modelData.icon : ""
                                 font.family: "JetBrainsMono Nerd Font"
                                 font.pixelSize: 14
-                                color: wsPill.isFocused ? Theme.colors.bg0 : (wsPill.isUrgent ? Theme.colors.red : Theme.colors.fg)
+                                color: wsPill.isUrgent ? Theme.colors.red : "#ffffff"
 
                                 Behavior on color {
                                     ColorAnimation {
@@ -455,7 +488,7 @@ Pill {
                         height: 5
                         radius: 2.5
                         visible: wsPill.openApps.length === 0
-                        color: wsPill.isFocused ? Theme.colors.bg0 : (wsPill.isUrgent ? Theme.colors.red : Theme.colors.fg)
+                        color: wsPill.isUrgent ? Theme.colors.red : "#888888"
 
                         Behavior on color {
                             ColorAnimation {

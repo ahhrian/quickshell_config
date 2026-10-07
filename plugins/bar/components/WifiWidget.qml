@@ -15,7 +15,7 @@ Rectangle {
     implicitHeight: 33
     radius: height / 2
 
-    color: mouseArea.containsMouse || (wifiDropdown && wifiDropdown.visible) ? Theme.colors.bg1 : Theme.colors.bg0
+    color: mouseArea.containsMouse || (wifiDropdown && wifiDropdown.visible) ? "#2a2a2a" : "#1a1a1a"
 
     Behavior on color {
         ColorAnimation {
@@ -27,15 +27,9 @@ Rectangle {
         id: iconText
         anchors.centerIn: parent
         text: Wifi.icon
-        color: Wifi.iconColor
+        color: "#ffffff"
         font.family: "Material Symbols Rounded"
         font.pixelSize: 16
-
-        Behavior on color {
-            ColorAnimation {
-                duration: 150
-            }
-        }
     }
 
     WifiGui {

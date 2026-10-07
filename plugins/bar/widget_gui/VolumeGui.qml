@@ -33,10 +33,10 @@ PopupWindow {
     Rectangle {
         id: card
         anchors.fill: parent
-        color: Theme.colors.bg0
+        color: "#1a1a1a"
         radius: 16
         border.width: 1
-        border.color: Theme.colors.bg2
+        border.color: "#333333"
         clip: true
 
         implicitHeight: contentColumn.implicitHeight + 32
@@ -57,7 +57,7 @@ PopupWindow {
                     width: 40
                     height: 40
                     radius: 20
-                    color: Theme.colors.bg1
+                    color: "#252525"
 
                     Text {
                         anchors.centerIn: parent
@@ -87,7 +87,7 @@ PopupWindow {
                         text: "Volume Control"
                         font.pixelSize: 14
                         font.weight: Font.DemiBold
-                        color: Theme.colors.fg
+                        color: "#ffffff"
                     }
 
                     Text {
@@ -102,7 +102,7 @@ PopupWindow {
                             return "Output Device";
                         }
                         font.pixelSize: 11
-                        color: Audio.muted ? Theme.colors.red : Theme.colors.bg4
+                        color: Audio.muted ? Theme.colors.red : "#777777"
                         elide: Text.ElideRight
                     }
                 }
@@ -112,9 +112,9 @@ PopupWindow {
                     implicitWidth: 32
                     implicitHeight: 32
                     radius: 16
-                    color: muteBtnMouse.containsMouse ? Theme.colors.bg2 : Theme.colors.bg1
+                    color: muteBtnMouse.containsMouse ? "#333333" : "#252525"
                     border.width: 1
-                    border.color: Audio.muted ? Theme.colors.red : Theme.colors.bg2
+                    border.color: Audio.muted ? Theme.colors.red : "#333333"
 
                     Behavior on color { ColorAnimation { duration: 120 } }
                     Behavior on border.color { ColorAnimation { duration: 120 } }
@@ -124,7 +124,7 @@ PopupWindow {
                         text: Audio.muted ? "volume_off" : "volume_up"
                         font.family: "Material Symbols Rounded"
                         font.pixelSize: 17
-                        color: Audio.muted ? Theme.colors.red : Theme.colors.fg
+                        color: Audio.muted ? Theme.colors.red : "#ffffff"
                     }
 
                     MouseArea {
@@ -143,9 +143,9 @@ PopupWindow {
                 Layout.fillWidth: true
                 implicitHeight: 46
                 radius: 12
-                color: Theme.colors.bg1
+                color: "#252525"
                 border.width: 1
-                border.color: Theme.colors.bg2
+                border.color: "#333333"
 
                 RowLayout {
                     anchors.fill: parent
@@ -182,7 +182,7 @@ PopupWindow {
                             anchors.verticalCenter: parent.verticalCenter
                             height: 6
                             radius: 3
-                            color: Theme.colors.bg2
+                            color: "#333333"
 
                             // Filled Progress Track
                             Rectangle {
@@ -205,7 +205,7 @@ PopupWindow {
                             radius: 8
                             anchors.verticalCenter: parent.verticalCenter
                             x: Math.max(0, Math.min(track.width - width, (track.width * Audio.volume) - (width / 2)))
-                            color: Theme.colors.fg
+                            color: "#ffffff"
                             border.width: 2
                             border.color: Audio.muted ? Theme.colors.red : Theme.colors.secondary_accent
 
@@ -245,7 +245,7 @@ PopupWindow {
                         text: Audio.muted ? "Muted" : (Audio.volumePercent + "%")
                         font.pixelSize: 12
                         font.weight: Font.DemiBold
-                        color: Audio.muted ? Theme.colors.red : Theme.colors.fg
+                        color: Audio.muted ? Theme.colors.red : "#ffffff"
                         Layout.minimumWidth: 42
                         horizontalAlignment: Text.AlignRight
                     }
@@ -256,7 +256,7 @@ PopupWindow {
             Rectangle {
                 Layout.fillWidth: true
                 height: 1
-                color: Theme.colors.bg2
+                color: "#333333"
             }
 
             // ==================== 4. OUTPUT DEVICES SECTION ====================
@@ -268,7 +268,7 @@ PopupWindow {
                     text: "OUTPUT DEVICE"
                     font.pixelSize: 11
                     font.weight: Font.DemiBold
-                    color: Theme.colors.bg4
+                    color: "#777777"
                     Layout.fillWidth: true
                 }
 
@@ -276,14 +276,14 @@ PopupWindow {
                     width: 24
                     height: 24
                     radius: 12
-                    color: refreshMouse.containsMouse ? Theme.colors.bg1 : "transparent"
+                    color: refreshMouse.containsMouse ? "#252525" : "transparent"
 
                     Text {
                         anchors.centerIn: parent
                         text: "refresh"
                         font.family: "Material Symbols Rounded"
                         font.pixelSize: 15
-                        color: Theme.colors.bg4
+                        color: "#777777"
                     }
 
                     MouseArea {
@@ -323,7 +323,7 @@ PopupWindow {
                     contentItem: Rectangle {
                         implicitWidth: 3
                         radius: 1.5
-                        color: Theme.colors.bg3
+                        color: "#3d3d3d"
                     }
                 }
 
@@ -342,9 +342,9 @@ PopupWindow {
                             Layout.fillWidth: true
                             implicitHeight: 52
                             radius: 12
-                            color: itemMouseArea.containsMouse ? Theme.colors.bg1 : (modelData.is_default ? Theme.colors.bg1 : "transparent")
+                            color: itemMouseArea.containsMouse ? "#252525" : (modelData.is_default ? "#252525" : "transparent")
                             border.width: 1
-                            border.color: modelData.is_default ? Theme.colors.secondary_accent : (itemMouseArea.containsMouse ? Theme.colors.bg2 : "transparent")
+                            border.color: modelData.is_default ? Theme.colors.secondary_accent : (itemMouseArea.containsMouse ? "#333333" : "transparent")
 
                             Behavior on color { ColorAnimation { duration: 120 } }
                             Behavior on border.color { ColorAnimation { duration: 120 } }
@@ -359,14 +359,14 @@ PopupWindow {
                                     width: 34
                                     height: 34
                                     radius: 17
-                                    color: modelData.is_default ? Theme.colors.bg2 : Theme.colors.bg1
+                                    color: modelData.is_default ? "#333333" : "#252525"
 
                                     Text {
                                         anchors.centerIn: parent
                                         text: modelData.icon || "volume_up"
                                         font.family: "Material Symbols Rounded"
                                         font.pixelSize: 18
-                                        color: modelData.is_default ? Theme.colors.secondary_accent : Theme.colors.fg
+                                        color: modelData.is_default ? Theme.colors.secondary_accent : "#ffffff"
                                     }
                                 }
 
@@ -380,7 +380,7 @@ PopupWindow {
                                         text: modelData.display_name || "Audio Device"
                                         font.pixelSize: 13
                                         font.weight: modelData.is_default ? Font.DemiBold : Font.Normal
-                                        color: Theme.colors.fg
+                                        color: "#ffffff"
                                         elide: Text.ElideRight
                                     }
 
@@ -388,7 +388,7 @@ PopupWindow {
                                         Layout.fillWidth: true
                                         text: modelData.is_default ? "Active Output" : (modelData.description || "Output Device")
                                         font.pixelSize: 11
-                                        color: modelData.is_default ? Theme.colors.secondary_accent : Theme.colors.bg4
+                                        color: modelData.is_default ? Theme.colors.secondary_accent : "#777777"
                                         elide: Text.ElideRight
                                     }
                                 }
@@ -400,7 +400,7 @@ PopupWindow {
                                     radius: 11
                                     color: modelData.is_default ? Theme.colors.secondary_accent : "transparent"
                                     border.width: modelData.is_default ? 0 : 1.5
-                                    border.color: itemMouseArea.containsMouse ? Theme.colors.bg4 : Theme.colors.bg2
+                                    border.color: itemMouseArea.containsMouse ? "#777777" : "#333333"
 
                                     Behavior on color { ColorAnimation { duration: 120 } }
                                     Behavior on border.color { ColorAnimation { duration: 120 } }
@@ -411,7 +411,7 @@ PopupWindow {
                                         text: "check"
                                         font.family: "Material Symbols Rounded"
                                         font.pixelSize: 15
-                                        color: Theme.colors.bg0
+                                        color: "#1a1a1a"
                                         font.weight: Font.Bold
                                     }
                                 }
@@ -438,13 +438,13 @@ PopupWindow {
                         Layout.fillWidth: true
                         implicitHeight: 48
                         radius: 10
-                        color: Theme.colors.bg1
+                        color: "#252525"
 
                         Text {
                             anchors.centerIn: parent
                             text: "No output devices found"
                             font.pixelSize: 12
-                            color: Theme.colors.bg4
+                            color: "#777777"
                         }
                     }
 
@@ -459,14 +459,14 @@ PopupWindow {
                             text: "info"
                             font.family: "Material Symbols Rounded"
                             font.pixelSize: 14
-                            color: Theme.colors.bg4
+                            color: "#777777"
                         }
 
                         Text {
                             text: "Connect headphones, Bluetooth, or HDMI to switch"
                             font.pixelSize: 11
                             font.italic: true
-                            color: Theme.colors.bg4
+                            color: "#777777"
                             Layout.fillWidth: true
                             elide: Text.ElideRight
                         }

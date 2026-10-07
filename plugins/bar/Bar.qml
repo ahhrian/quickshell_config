@@ -30,8 +30,13 @@ Scope {
                     id: left_layout
 
                     anchors.left: parent.left
+                    anchors.leftMargin: 14
                     anchors.verticalCenter: parent.verticalCenter
                     spacing: 15
+
+                    Workspaces {
+                        screen: modelData
+                    }
                 }
 
                 // Middle Modules
@@ -39,29 +44,7 @@ Scope {
                     id: middle_layout
 
                     anchors.centerIn: parent
-                    spacing: 10
-
-                    ClockWidget {
-                        Layout.fillWidth: true
-                    }
-
-                    Workspaces {
-                        screen: modelData
-                        Layout.fillWidth: true
-                    }
-
-                    PowerWidget {
-                        // Layout.rightMargin: 14
-                    }
-                }
-                
-                // Right-Side Modules
-                RowLayout {
-                    id: right_layout
-
-                    anchors.right: parent.right
-                    anchors.verticalCenter: parent.verticalCenter
-                    spacing: 15
+                    spacing: 6
 
                     WifiWidget {
                         barWindow: barWindow
@@ -71,22 +54,27 @@ Scope {
                         barWindow: barWindow
                     }
 
+                    ClockWidget {}
+
                     VolumeWidget {
                         barWindow: barWindow
                     }
 
                     NotificationWidget {
                         barWindow: barWindow
-                        Layout.rightMargin: 14
                     }
+                }
 
-                    // ClockWidget {
-                    //     Layout.fillWidth: true
-                    // }
+                // Right-Side Modules
+                RowLayout {
+                    id: right_layout
 
-                    // PowerWidget {
-                    //     Layout.rightMargin: 14
-                    // }
+                    anchors.right: parent.right
+                    anchors.rightMargin: 14
+                    anchors.verticalCenter: parent.verticalCenter
+                    spacing: 15
+
+                    PowerWidget {}
                 }
             }
 

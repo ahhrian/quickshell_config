@@ -14,7 +14,7 @@ Rectangle {
     implicitHeight: 33
     radius: height / 2
 
-    color: mouseArea.containsMouse || (volumeDropdown && volumeDropdown.visible) ? Theme.colors.bg1 : Theme.colors.bg0
+    color: mouseArea.containsMouse || (volumeDropdown && volumeDropdown.visible) ? "#2a2a2a" : "#1a1a1a"
 
     Behavior on color {
         ColorAnimation {
@@ -59,7 +59,7 @@ Rectangle {
             // Full 360 degree background track ring along the edge of the circular pill
             ctx.beginPath();
             ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-            ctx.strokeStyle = Theme.colors.bg2;
+            ctx.strokeStyle = "#333333";
             ctx.lineWidth = strokeWidth;
             ctx.stroke();
 
@@ -74,7 +74,7 @@ Rectangle {
                     const halfSweep = fraction * Math.PI; // At 50%, halfSweep is 90 deg -> 180 deg semicircle
                     ctx.arc(cx, cy, radius, topAngle - halfSweep, topAngle + halfSweep, false);
                 }
-                ctx.strokeStyle = Audio.muted ? Theme.colors.red : Theme.colors.secondary_accent;
+                ctx.strokeStyle = Audio.muted ? "rgba(255,255,255,0.35)" : "#ffffff";
                 ctx.lineWidth = strokeWidth;
                 ctx.lineCap = "round";
                 ctx.stroke();
@@ -85,7 +85,7 @@ Rectangle {
     Text {
         anchors.centerIn: parent
         text: Audio.icon
-        color: Audio.muted ? Theme.colors.red : Theme.colors.secondary_accent
+        color: Audio.muted ? "#888888" : "#ffffff"
         font.family: "Material Symbols Rounded"
         font.pixelSize: 16
 
