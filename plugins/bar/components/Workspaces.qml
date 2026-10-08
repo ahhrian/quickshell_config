@@ -19,7 +19,7 @@ Pill {
     Layout.preferredWidth: implicitWidth
 
     // Outer container pill is slightly darker than the inner workspace pills
-    color: "#1c1c1c"
+    color: BarColors.deepBackground
 
     Behavior on implicitWidth {
         NumberAnimation {
@@ -301,8 +301,8 @@ Pill {
         Layout.alignment: Qt.AlignCenter
         spacing: 5
 
-        readonly property color unfocused_fill: "#303030"
-        readonly property color focused_fill: "#303030"
+        readonly property color unfocused_fill: BarColors.surfaceBackground
+        readonly property color focused_fill: BarColors.surfaceBackground
         readonly property color focus_border: Theme.colors.default_accent
         readonly property int animDuration: 450
         readonly property var animEasing: Easing.OutCubic
@@ -393,7 +393,7 @@ Pill {
                 // Use the Pill's native border for the focus accent ring
                 // (follows the pill radius perfectly)
                 borderWidth: wsPill.isFocused ? 2 : 0
-                borderColor: wsPill.isFocused ? layout.focus_border : "transparent"
+                borderColor: wsPill.isFocused ? layout.focus_border : BarColors.transparent
 
                 Behavior on borderWidth {
                     NumberAnimation {
@@ -415,7 +415,7 @@ Pill {
 
                     Text {
                         text: wsPill.wsId.toString()
-                        color: wsPill.isUrgent ? Theme.colors.red : "#e8e8e8"
+                        color: wsPill.isUrgent ? Theme.colors.red : BarColors.primaryText
                         font.family: "SF Pro Display"
                         font.pixelSize: 14
                         Layout.alignment: Qt.AlignVCenter
@@ -448,7 +448,7 @@ Pill {
                                 text: modelData.isNerdFont ? modelData.icon : ""
                                 font.family: "JetBrainsMono Nerd Font"
                                 font.pixelSize: 14
-                                color: wsPill.isUrgent ? Theme.colors.red : "#e8e8e8"
+                                color: wsPill.isUrgent ? Theme.colors.red : BarColors.primaryText
 
                                 Behavior on color {
                                     ColorAnimation {
@@ -488,7 +488,7 @@ Pill {
                         height: 5
                         radius: 2.5
                         visible: wsPill.openApps.length === 0
-                        color: wsPill.isUrgent ? Theme.colors.red : "#909090"
+                        color: wsPill.isUrgent ? Theme.colors.red : BarColors.secondaryText
 
                         Behavior on color {
                             ColorAnimation {

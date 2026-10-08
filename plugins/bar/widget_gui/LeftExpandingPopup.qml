@@ -2,6 +2,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Hyprland
 
+import "../../../shared"
+
 PopupWindow {
     id: root
 
@@ -12,9 +14,9 @@ PopupWindow {
     property real maximumHeight: 540
     property real compactSize: 33
     property string compactIcon: ""
-    property color compactIconColor: "#e8e8e8"
-    property color compactColor: "#303030"
-    property color borderColor: "#3d3d3d"
+    property color compactIconColor: BarColors.primaryText
+    property color compactColor: BarColors.surfaceBackground
+    property color borderColor: BarColors.hoverAndBorder
     property int animationDuration: 260
     property int closeDuration: 170
     property real animationOvershoot: 0.8
@@ -34,7 +36,7 @@ PopupWindow {
     // Only the card moves. The native surface and its top-right anchor stay fixed.
     implicitWidth: targetWidth + overshootPadding
     implicitHeight: maximumHeight + overshootPadding
-    color: "transparent"
+    color: BarColors.transparent
     visible: false
     grabFocus: false
     mask: Region { item: card }
@@ -165,9 +167,9 @@ PopupWindow {
             height: root.animatedHeight
             radius: 16.5
             color: Qt.rgba(
-                (48 / 255) * root.contentProgress + root.compactColor.r * (1 - root.contentProgress),
-                (48 / 255) * root.contentProgress + root.compactColor.g * (1 - root.contentProgress),
-                (48 / 255) * root.contentProgress + root.compactColor.b * (1 - root.contentProgress), 1)
+                BarColors.surfaceBackground.r * root.contentProgress + root.compactColor.r * (1 - root.contentProgress),
+                BarColors.surfaceBackground.g * root.contentProgress + root.compactColor.g * (1 - root.contentProgress),
+                BarColors.surfaceBackground.b * root.contentProgress + root.compactColor.b * (1 - root.contentProgress), 1)
             border.width: 1
             border.color: Qt.rgba(root.borderColor.r, root.borderColor.g, root.borderColor.b, root.contentProgress)
             clip: true

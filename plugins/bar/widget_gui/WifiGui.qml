@@ -13,7 +13,7 @@ LeftExpandingPopup {
     targetWidth: 380
     maximumHeight: 540
     targetHeight: Math.min(card.implicitHeight, maximumHeight)
-    borderColor: "#343434"
+    borderColor: BarColors.hoverAndBorder
 
     property string expandedSsid: ""
     property string passwordInput: ""
@@ -51,7 +51,7 @@ LeftExpandingPopup {
                     width: 40
                     height: 40
                     radius: 20
-                    color: Wifi.enabled && Wifi.connected ? "#303030" : "#303030"
+                    color: Wifi.enabled && Wifi.connected ? BarColors.surfaceBackground : BarColors.surfaceBackground
 
                     Text {
                         anchors.centerIn: parent
@@ -72,7 +72,7 @@ LeftExpandingPopup {
                         font.family: "SF Pro Display"
                         font.bold: true
                         font.pixelSize: 16
-                        color: "#e8e8e8"
+                        color: BarColors.primaryText
                         elide: Text.ElideRight
                         Layout.fillWidth: true
                     }
@@ -90,7 +90,7 @@ LeftExpandingPopup {
                         }
                         font.family: "SF Pro Display"
                         font.pixelSize: 12
-                        color: "#e8e8e8"
+                        color: BarColors.primaryText
                         opacity: 0.65
                         elide: Text.ElideRight
                         Layout.fillWidth: true
@@ -102,7 +102,7 @@ LeftExpandingPopup {
                     width: 32
                     height: 32
                     radius: 16
-                    color: rescanMouse.containsMouse ? "#3d3d3d" : "transparent"
+                    color: rescanMouse.containsMouse ? BarColors.hoverAndBorder : BarColors.transparent
                     visible: Wifi.enabled
 
                     Text {
@@ -110,7 +110,7 @@ LeftExpandingPopup {
                         text: "refresh"
                         font.family: "Material Symbols Rounded"
                         font.pixelSize: 18
-                        color: "#e8e8e8"
+                        color: BarColors.primaryText
                         opacity: Wifi.scanning ? 0.4 : 0.8
                     }
 
@@ -129,7 +129,7 @@ LeftExpandingPopup {
                     width: 46
                     height: 24
                     radius: 12
-                    color: Wifi.enabled ? Theme.colors.default_accent : "#3d3d3d"
+                    color: Wifi.enabled ? Theme.colors.default_accent : BarColors.hoverAndBorder
 
                     Behavior on color {
                         ColorAnimation { duration: 180 }
@@ -140,7 +140,7 @@ LeftExpandingPopup {
                         width: 20
                         height: 20
                         radius: 10
-                        color: "#e8e8e8"
+                        color: BarColors.primaryText
                         y: 2
                         x: Wifi.enabled ? 24 : 2
 
@@ -164,7 +164,7 @@ LeftExpandingPopup {
             Rectangle {
                 Layout.fillWidth: true
                 height: 1
-                color: "#3d3d3d"
+                color: BarColors.hoverAndBorder
             }
 
             // ==================== 3. NETWORKS CONTAINER ====================
@@ -182,7 +182,7 @@ LeftExpandingPopup {
                         text: "wifi_off"
                         font.family: "Material Symbols Rounded"
                         font.pixelSize: 32
-                        color: "#777777"
+                        color: BarColors.secondaryText
                         Layout.alignment: Qt.AlignHCenter
                     }
 
@@ -190,7 +190,7 @@ LeftExpandingPopup {
                         text: "Wi-Fi is turned off"
                         font.family: "SF Pro Display"
                         font.pixelSize: 14
-                        color: "#e8e8e8"
+                        color: BarColors.primaryText
                         opacity: 0.7
                         Layout.alignment: Qt.AlignHCenter
                     }
@@ -208,7 +208,7 @@ LeftExpandingPopup {
                             font.family: "SF Pro Display"
                             font.bold: true
                             font.pixelSize: 12
-                            color: "#303030"
+                            color: BarColors.textOnAccent
                         }
 
                         MouseArea {
@@ -246,7 +246,7 @@ LeftExpandingPopup {
                             font.family: "SF Pro Display"
                             font.bold: true
                             font.pixelSize: 11
-                            color: "#777777"
+                            color: BarColors.secondaryText
                             Layout.leftMargin: 4
                         }
 
@@ -257,7 +257,7 @@ LeftExpandingPopup {
                                 id: knownPill
                                 Layout.fillWidth: true
                                 radius: 10
-                                color: modelData.connected ? "#303030" : (knownMouse.containsMouse ? "#303030" : "transparent")
+                                color: modelData.connected ? BarColors.surfaceBackground : (knownMouse.containsMouse ? BarColors.surfaceBackground : BarColors.transparent)
                                 border.width: modelData.connected ? 1 : 0
                                 border.color: Theme.colors.default_accent
 
@@ -290,7 +290,7 @@ LeftExpandingPopup {
                                             text: root.getSignalIcon(modelData.signal)
                                             font.family: "Material Symbols Rounded"
                                             font.pixelSize: 18
-                                            color: modelData.connected ? Theme.colors.default_accent : "#e8e8e8"
+                                            color: modelData.connected ? Theme.colors.default_accent : BarColors.primaryText
                                             Layout.alignment: Qt.AlignVCenter
                                         }
 
@@ -304,7 +304,7 @@ LeftExpandingPopup {
                                                 font.family: "SF Pro Display"
                                                 font.bold: modelData.connected
                                                 font.pixelSize: 13
-                                                color: "#e8e8e8"
+                                                color: BarColors.primaryText
                                                 elide: Text.ElideRight
                                                 Layout.fillWidth: true
                                             }
@@ -313,7 +313,7 @@ LeftExpandingPopup {
                                                 text: modelData.connected ? "Connected" : (modelData.outOfRange ? "Not in range" : modelData.signal + "% signal")
                                                 font.family: "SF Pro Display"
                                                 font.pixelSize: 11
-                                                color: modelData.connected ? Theme.colors.default_accent : "#777777"
+                                                color: modelData.connected ? Theme.colors.default_accent : BarColors.secondaryText
                                                 elide: Text.ElideRight
                                                 Layout.fillWidth: true
                                             }
@@ -323,7 +323,7 @@ LeftExpandingPopup {
                                             text: "lock"
                                             font.family: "Material Symbols Rounded"
                                             font.pixelSize: 14
-                                            color: "#777777"
+                                            color: BarColors.secondaryText
                                             visible: modelData.secure
                                             Layout.alignment: Qt.AlignVCenter
                                         }
@@ -338,7 +338,7 @@ LeftExpandingPopup {
                                         Rectangle {
                                             Layout.fillWidth: true
                                             height: 1
-                                            color: "#3d3d3d"
+                                            color: BarColors.hoverAndBorder
                                         }
 
                                         RowLayout {
@@ -349,7 +349,7 @@ LeftExpandingPopup {
                                                 text: "Security: " + (modelData.security || "WPA")
                                                 font.family: "SF Pro Display"
                                                 font.pixelSize: 11
-                                                color: "#777777"
+                                                color: BarColors.secondaryText
                                                 Layout.fillWidth: true
                                             }
 
@@ -367,7 +367,7 @@ LeftExpandingPopup {
                                                     font.family: "SF Pro Display"
                                                     font.bold: true
                                                     font.pixelSize: 11
-                                                    color: "#303030"
+                                                    color: BarColors.textOnAccent
                                                 }
 
                                                 MouseArea {
@@ -391,7 +391,7 @@ LeftExpandingPopup {
                                                     font.family: "SF Pro Display"
                                                     font.bold: true
                                                     font.pixelSize: 11
-                                                    color: "#e8e8e8"
+                                                    color: BarColors.primaryText
                                                 }
 
                                                 MouseArea {
@@ -406,14 +406,14 @@ LeftExpandingPopup {
                                                 width: 65
                                                 height: 26
                                                 radius: 6
-                                                color: "#3d3d3d"
+                                                color: BarColors.hoverAndBorder
 
                                                 Text {
                                                     anchors.centerIn: parent
                                                     text: "Forget"
                                                     font.family: "SF Pro Display"
                                                     font.pixelSize: 11
-                                                    color: "#e8e8e8"
+                                                    color: BarColors.primaryText
                                                 }
 
                                                 MouseArea {
@@ -458,7 +458,7 @@ LeftExpandingPopup {
                                 font.family: "SF Pro Display"
                                 font.bold: true
                                 font.pixelSize: 11
-                                color: "#777777"
+                                color: BarColors.secondaryText
                                 Layout.fillWidth: true
                             }
 
@@ -467,7 +467,7 @@ LeftExpandingPopup {
                                 implicitWidth: hiddenRow.implicitWidth + 12
                                 implicitHeight: 22
                                 radius: 11
-                                color: hiddenMouse.containsMouse ? "#3d3d3d" : "#303030"
+                                color: hiddenMouse.containsMouse ? BarColors.hoverAndBorder : BarColors.surfaceBackground
 
                                 RowLayout {
                                     id: hiddenRow
@@ -484,7 +484,7 @@ LeftExpandingPopup {
                                         text: "Hidden..."
                                         font.family: "SF Pro Display"
                                         font.pixelSize: 11
-                                        color: "#e8e8e8"
+                                        color: BarColors.primaryText
                                     }
                                 }
 
@@ -503,7 +503,7 @@ LeftExpandingPopup {
                             text: Wifi.scanning ? "Scanning nearby Wi-Fi networks..." : "No other networks found."
                             font.family: "SF Pro Display"
                             font.pixelSize: 12
-                            color: "#777777"
+                            color: BarColors.secondaryText
                             Layout.alignment: Qt.AlignHCenter
                             Layout.topMargin: 8
                             Layout.bottomMargin: 8
@@ -518,7 +518,7 @@ LeftExpandingPopup {
                                 id: availPill
                                 Layout.fillWidth: true
                                 radius: 10
-                                color: availMouse.containsMouse || isExpanded ? "#303030" : "transparent"
+                                color: availMouse.containsMouse || isExpanded ? BarColors.surfaceBackground : BarColors.transparent
 
                                 readonly property bool isExpanded: (root.expandedSsid === modelData.ssid)
 
@@ -549,7 +549,7 @@ LeftExpandingPopup {
                                             text: root.getSignalIcon(modelData.signal)
                                             font.family: "Material Symbols Rounded"
                                             font.pixelSize: 18
-                                            color: "#e8e8e8"
+                                            color: BarColors.primaryText
                                             Layout.alignment: Qt.AlignVCenter
                                         }
 
@@ -562,7 +562,7 @@ LeftExpandingPopup {
                                                 text: modelData.ssid
                                                 font.family: "SF Pro Display"
                                                 font.pixelSize: 13
-                                                color: "#e8e8e8"
+                                                color: BarColors.primaryText
                                                 elide: Text.ElideRight
                                                 Layout.fillWidth: true
                                             }
@@ -571,7 +571,7 @@ LeftExpandingPopup {
                                                 text: modelData.signal + "% signal" + (modelData.secure ? " • Secured" : " • Open")
                                                 font.family: "SF Pro Display"
                                                 font.pixelSize: 11
-                                                color: "#777777"
+                                                color: BarColors.secondaryText
                                                 elide: Text.ElideRight
                                                 Layout.fillWidth: true
                                             }
@@ -581,7 +581,7 @@ LeftExpandingPopup {
                                             text: "lock"
                                             font.family: "Material Symbols Rounded"
                                             font.pixelSize: 14
-                                            color: "#777777"
+                                            color: BarColors.secondaryText
                                             visible: modelData.secure
                                             Layout.alignment: Qt.AlignVCenter
                                         }
@@ -596,7 +596,7 @@ LeftExpandingPopup {
                                         Rectangle {
                                             Layout.fillWidth: true
                                             height: 1
-                                            color: "#3d3d3d"
+                                            color: BarColors.hoverAndBorder
                                         }
 
                                         // Password input if secured
@@ -604,9 +604,9 @@ LeftExpandingPopup {
                                             Layout.fillWidth: true
                                             height: 32
                                             radius: 6
-                                            color: "#303030"
+                                            color: BarColors.surfaceBackground
                                             border.width: 1
-                                            border.color: pwdInput.activeFocus ? Theme.colors.default_accent : "#3d3d3d"
+                                            border.color: pwdInput.activeFocus ? Theme.colors.default_accent : BarColors.hoverAndBorder
                                             visible: modelData.secure
 
                                             RowLayout {
@@ -619,7 +619,7 @@ LeftExpandingPopup {
                                                     Layout.fillWidth: true
                                                     font.family: "SF Pro Display"
                                                     font.pixelSize: 12
-                                                    color: "#e8e8e8"
+                                                    color: BarColors.primaryText
                                                     echoMode: root.showPassword ? TextInput.Normal : TextInput.Password
                                                     text: root.passwordInput
                                                     onTextChanged: root.passwordInput = text
@@ -629,7 +629,7 @@ LeftExpandingPopup {
                                                         text: "Enter password"
                                                         font.family: "SF Pro Display"
                                                         font.pixelSize: 12
-                                                        color: "#777777"
+                                                        color: BarColors.secondaryText
                                                         visible: pwdInput.text === "" && !pwdInput.activeFocus
                                                     }
                                                 }
@@ -638,7 +638,7 @@ LeftExpandingPopup {
                                                     text: root.showPassword ? "visibility_off" : "visibility"
                                                     font.family: "Material Symbols Rounded"
                                                     font.pixelSize: 16
-                                                    color: "#777777"
+                                                    color: BarColors.secondaryText
 
                                                     MouseArea {
                                                         anchors.fill: parent
@@ -658,7 +658,7 @@ LeftExpandingPopup {
                                                 text: Wifi.connectingSsid === modelData.ssid ? "Connecting to " + modelData.ssid + "..." : (modelData.secure ? "Secured with " + modelData.security : "Open Network")
                                                 font.family: "SF Pro Display"
                                                 font.pixelSize: 11
-                                                color: "#777777"
+                                                color: BarColors.secondaryText
                                                 Layout.fillWidth: true
                                                 elide: Text.ElideRight
                                             }
@@ -667,14 +667,14 @@ LeftExpandingPopup {
                                                 width: 60
                                                 height: 26
                                                 radius: 6
-                                                color: "#3d3d3d"
+                                                color: BarColors.hoverAndBorder
 
                                                 Text {
                                                     anchors.centerIn: parent
                                                     text: "Cancel"
                                                     font.family: "SF Pro Display"
                                                     font.pixelSize: 11
-                                                    color: "#e8e8e8"
+                                                    color: BarColors.primaryText
                                                 }
 
                                                 MouseArea {
@@ -696,7 +696,7 @@ LeftExpandingPopup {
                                                     font.family: "SF Pro Display"
                                                     font.bold: true
                                                     font.pixelSize: 11
-                                                    color: "#303030"
+                                                    color: BarColors.textOnAccent
                                                 }
 
                                                 MouseArea {

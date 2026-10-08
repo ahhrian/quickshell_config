@@ -32,7 +32,7 @@ PopupWindow {
     implicitWidth: targetWidth + 2 * overshootPadding
     implicitHeight: targetHeight + overshootPadding
 
-    color: "transparent"
+    color: BarColors.transparent
     visible: false
     // Manage dismissal ourselves so the native window survives the exit animation.
     grabFocus: false
@@ -43,7 +43,7 @@ PopupWindow {
     property int animationDuration: 260
     property int closeDuration: 170
     property bool closing: false
-    property color collapsedColor: "#343434"
+    property color collapsedColor: BarColors.surfaceBackground
     signal closeFinished()
     property real animationOvershoot: 0.8
     readonly property int overshootPadding: 12
@@ -225,11 +225,12 @@ PopupWindow {
         height: root.animatedHeight
         radius: 18
         color: root.closing ? Qt.rgba(
-            (32 / 255) * root.contentProgress + root.collapsedColor.r * (1 - root.contentProgress),
-            (32 / 255) * root.contentProgress + root.collapsedColor.g * (1 - root.contentProgress),
-            (32 / 255) * root.contentProgress + root.collapsedColor.b * (1 - root.contentProgress), 1) : "#202020"
+            BarColors.deepBackground.r * root.contentProgress + root.collapsedColor.r * (1 - root.contentProgress),
+            BarColors.deepBackground.g * root.contentProgress + root.collapsedColor.g * (1 - root.contentProgress),
+            BarColors.deepBackground.b * root.contentProgress + root.collapsedColor.b * (1 - root.contentProgress), 1) : BarColors.deepBackground
         border.width: 1
-        border.color: Qt.rgba(56 / 255, 56 / 255, 56 / 255, root.closing ? root.contentProgress : 1)
+        border.color: Qt.rgba(BarColors.hoverAndBorder.r, BarColors.hoverAndBorder.g, BarColors.hoverAndBorder.b,
+                              root.closing ? root.contentProgress : 1)
         clip: true
         focus: true
         Keys.onEscapePressed: root.closePopup()
@@ -239,7 +240,7 @@ PopupWindow {
             anchors.horizontalCenter: parent.horizontalCenter
             y: (33 - height) / 2
             text: Time.time
-            color: "#e8e8e8"
+            color: BarColors.primaryText
             font.family: "SF Pro Display"
             font.pixelSize: 16
             font.bold: true
@@ -275,14 +276,14 @@ PopupWindow {
                         Layout.preferredWidth: 28
                         Layout.preferredHeight: 28
                         radius: 14
-                        color: prevMouse.containsMouse ? "#343434" : "transparent"
+                        color: prevMouse.containsMouse ? BarColors.hoverAndBorder : BarColors.transparent
 
                         Text {
                             anchors.centerIn: parent
                             text: "chevron_left"
                             font.family: "Material Symbols Rounded"
                             font.pixelSize: 18
-                            color: prevMouse.containsMouse ? "#ffffff" : "#b0b0b0"
+                            color: prevMouse.containsMouse ? BarColors.primaryText : BarColors.secondaryText
                         }
 
                         MouseArea {
@@ -308,14 +309,14 @@ PopupWindow {
                                 font.family: "SF Pro Display"
                                 font.pixelSize: 15
                                 font.bold: true
-                                color: "#f0f0f0"
+                                color: BarColors.primaryText
                             }
 
                             Text {
                                 text: root.viewYear
                                 font.family: "SF Pro Display"
                                 font.pixelSize: 15
-                                color: "#909090"
+                                color: BarColors.secondaryText
                             }
                         }
 
@@ -332,14 +333,14 @@ PopupWindow {
                         Layout.preferredWidth: 28
                         Layout.preferredHeight: 28
                         radius: 14
-                        color: nextMouse.containsMouse ? "#343434" : "transparent"
+                        color: nextMouse.containsMouse ? BarColors.hoverAndBorder : BarColors.transparent
 
                         Text {
                             anchors.centerIn: parent
                             text: "chevron_right"
                             font.family: "Material Symbols Rounded"
                             font.pixelSize: 18
-                            color: nextMouse.containsMouse ? "#ffffff" : "#b0b0b0"
+                            color: nextMouse.containsMouse ? BarColors.primaryText : BarColors.secondaryText
                         }
 
                         MouseArea {
@@ -396,7 +397,7 @@ PopupWindow {
                                     font.family: "SF Pro Display"
                                     font.pixelSize: 11
                                     font.bold: true
-                                    color: modelData.weekend ? "#dd6b6b" : "#757575"
+                                    color: modelData.weekend ? Theme.colors.red : BarColors.secondaryText
                                 }
                             }
                         }
@@ -426,7 +427,7 @@ PopupWindow {
                                     width: 26
                                     height: 26
                                     radius: 13
-                                    color: modelData.isToday ? "#81c8be" : (cellMouse.containsMouse && modelData.isCurrentMonth ? "#343434" : "transparent")
+                                    color: modelData.isToday ? Theme.colors.default_accent : (cellMouse.containsMouse && modelData.isCurrentMonth ? BarColors.hoverAndBorder : BarColors.transparent)
 
                                     Behavior on color {
                                         ColorAnimation { duration: 120 }
@@ -439,10 +440,10 @@ PopupWindow {
                                         font.pixelSize: 12
                                         font.bold: modelData.isToday
                                         color: {
-                                            if (modelData.isToday) return "#1a1a1a";
-                                            if (!modelData.isCurrentMonth) return "#484848";
-                                            if (modelData.isWeekend) return "#dd6b6b";
-                                            return "#e0e0e0";
+                                            if (modelData.isToday) return BarColors.textOnAccent;
+                                            if (!modelData.isCurrentMonth) return BarColors.secondaryText;
+                                            if (modelData.isWeekend) return Theme.colors.red;
+                                            return BarColors.primaryText;
                                         }
                                     }
                                 }
@@ -461,7 +462,7 @@ PopupWindow {
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 1
-                        color: "#2e2e2e"
+                        color: BarColors.hoverAndBorder
                     }
 
                     // Footer with today jump
@@ -477,14 +478,14 @@ PopupWindow {
                                 Layout.preferredWidth: 6
                                 Layout.preferredHeight: 6
                                 radius: 3
-                                color: "#81c8be"
+                                color: Theme.colors.default_accent
                             }
 
                             Text {
                                 text: Qt.formatDate(new Date(), "dddd, d MMMM")
                                 font.family: "SF Pro Display"
                                 font.pixelSize: 11
-                                color: footerMouse.containsMouse ? "#ffffff" : "#909090"
+                                color: footerMouse.containsMouse ? BarColors.primaryText : BarColors.secondaryText
 
                                 Behavior on color {
                                     ColorAnimation { duration: 120 }
@@ -498,7 +499,7 @@ PopupWindow {
                                 font.family: "SF Pro Display"
                                 font.pixelSize: 11
                                 font.bold: true
-                                color: footerMouse.containsMouse ? "#81c8be" : "#707070"
+                                color: footerMouse.containsMouse ? Theme.colors.default_accent : BarColors.secondaryText
 
                                 Behavior on color {
                                     ColorAnimation { duration: 120 }

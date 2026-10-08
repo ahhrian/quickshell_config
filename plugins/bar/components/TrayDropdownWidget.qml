@@ -1,5 +1,7 @@
 import QtQuick
 
+import "../../../shared"
+
 Item {
     id: root
 
@@ -7,7 +9,7 @@ Item {
     property var dropdownController: null
     property var dropdown: null
     property bool hovered: false
-    readonly property color pillColor: hovered || (dropdown && dropdown.visible) ? "#343434" : "#303030"
+    readonly property color pillColor: hovered || (dropdown && dropdown.visible) ? BarColors.hoverAndBorder : BarColors.surfaceBackground
     default property alias pillContents: pill.data
 
     // The bar anchors each widget to its right neighbour, so extra width only

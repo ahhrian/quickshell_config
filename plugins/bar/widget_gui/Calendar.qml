@@ -31,7 +31,7 @@ PopupWindow {
     implicitWidth: targetWidth + 2 * overshootPadding
     implicitHeight: targetHeight + overshootPadding
 
-    color: "transparent"
+    color: BarColors.transparent
     visible: false
     // Manage dismissal ourselves so the native window survives the exit animation.
     grabFocus: false
@@ -42,7 +42,7 @@ PopupWindow {
     property int animationDuration: 260
     property int closeDuration: 170
     property bool closing: false
-    property color collapsedColor: "#343434"
+    property color collapsedColor: BarColors.surfaceBackground
     signal closeFinished()
     property real animationOvershoot: 0.8
     readonly property int overshootPadding: 12
@@ -165,11 +165,12 @@ PopupWindow {
         height: root.animatedHeight
         radius: 18
         color: root.closing ? Qt.rgba(
-            (32 / 255) * root.contentProgress + root.collapsedColor.r * (1 - root.contentProgress),
-            (32 / 255) * root.contentProgress + root.collapsedColor.g * (1 - root.contentProgress),
-            (32 / 255) * root.contentProgress + root.collapsedColor.b * (1 - root.contentProgress), 1) : "#202020"
+            BarColors.deepBackground.r * root.contentProgress + root.collapsedColor.r * (1 - root.contentProgress),
+            BarColors.deepBackground.g * root.contentProgress + root.collapsedColor.g * (1 - root.contentProgress),
+            BarColors.deepBackground.b * root.contentProgress + root.collapsedColor.b * (1 - root.contentProgress), 1) : BarColors.deepBackground
         border.width: 1
-        border.color: Qt.rgba(56 / 255, 56 / 255, 56 / 255, root.closing ? root.contentProgress : 1)
+        border.color: Qt.rgba(BarColors.hoverAndBorder.r, BarColors.hoverAndBorder.g, BarColors.hoverAndBorder.b,
+                              root.closing ? root.contentProgress : 1)
         clip: true
         focus: true
         Keys.onEscapePressed: root.closePopup()
@@ -179,7 +180,7 @@ PopupWindow {
             anchors.horizontalCenter: parent.horizontalCenter
             y: (33 - height) / 2
             text: Time.time
-            color: "#e8e8e8"
+            color: BarColors.primaryText
             font.family: "SF Pro Display"
             font.pixelSize: 16
             font.bold: true
@@ -207,7 +208,7 @@ PopupWindow {
                     anchors.centerIn: parent
                     anchors.verticalCenterOffset: 1
                     text: Time.time
-                    color: "#f0f0f0"
+                    color: BarColors.primaryText
                     font.family: "SF Pro Display"
                     font.pixelSize: 22
                     font.bold: true
@@ -245,7 +246,7 @@ PopupWindow {
                                     font.family: "SF Pro Display"
                                     font.pixelSize: modelData.isToday ? 11 : 10
                                     font.bold: modelData.isToday
-                                    color: modelData.isToday ? "#f0f0f0" : (modelData.isWeekend ? "#dd6b6b" : "#757575")
+                                    color: modelData.isToday ? BarColors.primaryText : (modelData.isWeekend ? Theme.colors.red : BarColors.secondaryText)
                                 }
 
                                 Text {
@@ -254,7 +255,7 @@ PopupWindow {
                                     font.family: "SF Pro Display"
                                     font.pixelSize: modelData.isToday ? 15 : 13
                                     font.bold: modelData.isToday
-                                    color: modelData.isToday ? "#81c8be" : (modelData.isWeekend ? "#c55858" : "#b0b0b0")
+                                    color: modelData.isToday ? Theme.colors.default_accent : (modelData.isWeekend ? Theme.colors.red : BarColors.secondaryText)
                                 }
                             }
                         }

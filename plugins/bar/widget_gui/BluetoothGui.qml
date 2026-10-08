@@ -13,7 +13,7 @@ LeftExpandingPopup {
     targetWidth: 380
     maximumHeight: 540
     targetHeight: Math.min(card.implicitHeight, maximumHeight)
-    borderColor: "#3d3d3d"
+    borderColor: BarColors.hoverAndBorder
 
     property string expandedMac: ""
 
@@ -59,7 +59,7 @@ LeftExpandingPopup {
                     width: 40
                     height: 40
                     radius: 20
-                    color: "#303030"
+                    color: BarColors.surfaceBackground
 
                     Text {
                         anchors.centerIn: parent
@@ -86,7 +86,7 @@ LeftExpandingPopup {
                         font.family: "SF Pro Display"
                         font.bold: true
                         font.pixelSize: 16
-                        color: "#e8e8e8"
+                        color: BarColors.primaryText
                         elide: Text.ElideRight
                         Layout.fillWidth: true
                     }
@@ -103,7 +103,7 @@ LeftExpandingPopup {
                         }
                         font.family: "SF Pro Display"
                         font.pixelSize: 12
-                        color: "#e8e8e8"
+                        color: BarColors.primaryText
                         opacity: 0.65
                         elide: Text.ElideRight
                         Layout.fillWidth: true
@@ -115,7 +115,7 @@ LeftExpandingPopup {
                     width: 32
                     height: 32
                     radius: 16
-                    color: rescanMouse.containsMouse ? "#3d3d3d" : "transparent"
+                    color: rescanMouse.containsMouse ? BarColors.hoverAndBorder : BarColors.transparent
                     visible: Bluetooth.enabled
 
                     Text {
@@ -123,7 +123,7 @@ LeftExpandingPopup {
                         text: "refresh"
                         font.family: "Material Symbols Rounded"
                         font.pixelSize: 18
-                        color: "#e8e8e8"
+                        color: BarColors.primaryText
                         opacity: Bluetooth.scanning ? 0.4 : 0.8
                     }
 
@@ -142,7 +142,7 @@ LeftExpandingPopup {
                     width: 46
                     height: 24
                     radius: 12
-                    color: Bluetooth.enabled ? Theme.colors.default_accent : "#3d3d3d"
+                    color: Bluetooth.enabled ? Theme.colors.default_accent : BarColors.hoverAndBorder
 
                     Behavior on color {
                         ColorAnimation { duration: 180 }
@@ -153,7 +153,7 @@ LeftExpandingPopup {
                         width: 20
                         height: 20
                         radius: 10
-                        color: "#e8e8e8"
+                        color: BarColors.primaryText
                         y: 2
                         x: Bluetooth.enabled ? 24 : 2
 
@@ -177,7 +177,7 @@ LeftExpandingPopup {
             Rectangle {
                 Layout.fillWidth: true
                 height: 1
-                color: "#3d3d3d"
+                color: BarColors.hoverAndBorder
             }
 
             // ==================== 3. DISABLED PLACEHOLDER ====================
@@ -194,7 +194,7 @@ LeftExpandingPopup {
                         text: "bluetooth_disabled"
                         font.family: "Material Symbols Rounded"
                         font.pixelSize: 32
-                        color: "#777777"
+                        color: BarColors.secondaryText
                         Layout.alignment: Qt.AlignHCenter
                     }
 
@@ -202,7 +202,7 @@ LeftExpandingPopup {
                         text: "Bluetooth is turned off"
                         font.family: "SF Pro Display"
                         font.pixelSize: 14
-                        color: "#e8e8e8"
+                        color: BarColors.primaryText
                         opacity: 0.7
                         Layout.alignment: Qt.AlignHCenter
                     }
@@ -220,7 +220,7 @@ LeftExpandingPopup {
                             font.family: "SF Pro Display"
                             font.bold: true
                             font.pixelSize: 12
-                            color: "#303030"
+                            color: BarColors.textOnAccent
                         }
 
                         MouseArea {
@@ -259,7 +259,7 @@ LeftExpandingPopup {
                     contentItem: Rectangle {
                         implicitWidth: 3
                         radius: 1.5
-                        color: "#3d3d3d"
+                        color: BarColors.hoverAndBorder
                     }
                 }
 
@@ -279,7 +279,7 @@ LeftExpandingPopup {
                             font.family: "SF Pro Display"
                             font.bold: true
                             font.pixelSize: 11
-                            color: "#777777"
+                            color: BarColors.secondaryText
                             Layout.leftMargin: 4
                         }
 
@@ -290,7 +290,7 @@ LeftExpandingPopup {
                                 id: pairedCard
                                 Layout.fillWidth: true
                                 radius: 10
-                                color: modelData.connected ? "#303030" : (pairedMouse.containsMouse ? "#303030" : "transparent")
+                                color: modelData.connected ? BarColors.surfaceBackground : (pairedMouse.containsMouse ? BarColors.surfaceBackground : BarColors.transparent)
                                 border.width: modelData.connected ? 1 : 0
                                 border.color: Theme.colors.default_accent
 
@@ -323,7 +323,7 @@ LeftExpandingPopup {
                                             text: root.getDeviceMaterialIcon(modelData.icon)
                                             font.family: "Material Symbols Rounded"
                                             font.pixelSize: 20
-                                            color: modelData.connected ? Theme.colors.default_accent : "#e8e8e8"
+                                            color: modelData.connected ? Theme.colors.default_accent : BarColors.primaryText
                                             Layout.alignment: Qt.AlignVCenter
                                         }
 
@@ -337,7 +337,7 @@ LeftExpandingPopup {
                                                 font.family: "SF Pro Display"
                                                 font.bold: modelData.connected
                                                 font.pixelSize: 13
-                                                color: "#e8e8e8"
+                                                color: BarColors.primaryText
                                                 elide: Text.ElideRight
                                                 Layout.fillWidth: true
                                             }
@@ -355,7 +355,7 @@ LeftExpandingPopup {
                                                 }
                                                 font.family: "SF Pro Display"
                                                 font.pixelSize: 11
-                                                color: modelData.connected ? Theme.colors.default_accent : "#777777"
+                                                color: modelData.connected ? Theme.colors.default_accent : BarColors.secondaryText
                                                 elide: Text.ElideRight
                                                 Layout.fillWidth: true
                                             }
@@ -366,7 +366,7 @@ LeftExpandingPopup {
                                             text: modelData.connected ? "check_circle" : "chevron_right"
                                             font.family: "Material Symbols Rounded"
                                             font.pixelSize: 16
-                                            color: modelData.connected ? Theme.colors.default_accent : "#777777"
+                                            color: modelData.connected ? Theme.colors.default_accent : BarColors.secondaryText
                                             Layout.alignment: Qt.AlignVCenter
                                         }
                                     }
@@ -380,7 +380,7 @@ LeftExpandingPopup {
                                         Rectangle {
                                             Layout.fillWidth: true
                                             height: 1
-                                            color: "#3d3d3d"
+                                            color: BarColors.hoverAndBorder
                                         }
 
                                         RowLayout {
@@ -391,7 +391,7 @@ LeftExpandingPopup {
                                                 text: modelData.mac
                                                 font.family: "SF Pro Display"
                                                 font.pixelSize: 11
-                                                color: "#777777"
+                                                color: BarColors.secondaryText
                                                 Layout.fillWidth: true
                                             }
 
@@ -409,7 +409,7 @@ LeftExpandingPopup {
                                                     font.family: "SF Pro Display"
                                                     font.bold: true
                                                     font.pixelSize: 11
-                                                    color: "#303030"
+                                                    color: BarColors.textOnAccent
                                                 }
 
                                                 MouseArea {
@@ -433,7 +433,7 @@ LeftExpandingPopup {
                                                     font.family: "SF Pro Display"
                                                     font.bold: true
                                                     font.pixelSize: 11
-                                                    color: "#e8e8e8"
+                                                    color: BarColors.primaryText
                                                 }
 
                                                 MouseArea {
@@ -448,14 +448,14 @@ LeftExpandingPopup {
                                                 width: 65
                                                 height: 26
                                                 radius: 6
-                                                color: "#3d3d3d"
+                                                color: BarColors.hoverAndBorder
 
                                                 Text {
                                                     anchors.centerIn: parent
                                                     text: "Forget"
                                                     font.family: "SF Pro Display"
                                                     font.pixelSize: 11
-                                                    color: "#e8e8e8"
+                                                    color: BarColors.primaryText
                                                 }
 
                                                 MouseArea {
@@ -499,7 +499,7 @@ LeftExpandingPopup {
                                 font.family: "SF Pro Display"
                                 font.bold: true
                                 font.pixelSize: 11
-                                color: "#777777"
+                                color: BarColors.secondaryText
                                 Layout.leftMargin: 4
                                 Layout.fillWidth: true
                             }
@@ -519,7 +519,7 @@ LeftExpandingPopup {
                             Layout.fillWidth: true
                             height: 60
                             radius: 10
-                            color: "#303030"
+                            color: BarColors.surfaceBackground
                             visible: Bluetooth.availableDevices.length === 0
 
                             RowLayout {
@@ -530,14 +530,14 @@ LeftExpandingPopup {
                                     text: Bluetooth.scanning ? "search" : "devices_other"
                                     font.family: "Material Symbols Rounded"
                                     font.pixelSize: 20
-                                    color: "#777777"
+                                    color: BarColors.secondaryText
                                 }
 
                                 Text {
                                     text: Bluetooth.scanning ? "Scanning for nearby devices..." : "No nearby devices found. Tap refresh to scan."
                                     font.family: "SF Pro Display"
                                     font.pixelSize: 12
-                                    color: "#e8e8e8"
+                                    color: BarColors.primaryText
                                     opacity: 0.6
                                 }
                             }
@@ -551,7 +551,7 @@ LeftExpandingPopup {
                                 id: availCard
                                 Layout.fillWidth: true
                                 radius: 10
-                                color: availMouse.containsMouse ? "#303030" : "transparent"
+                                color: availMouse.containsMouse ? BarColors.surfaceBackground : BarColors.transparent
 
                                 readonly property bool isExpanded: (root.expandedMac === modelData.mac)
 
@@ -582,7 +582,7 @@ LeftExpandingPopup {
                                             text: root.getDeviceMaterialIcon(modelData.icon)
                                             font.family: "Material Symbols Rounded"
                                             font.pixelSize: 20
-                                            color: "#e8e8e8"
+                                            color: BarColors.primaryText
                                             Layout.alignment: Qt.AlignVCenter
                                         }
 
@@ -595,7 +595,7 @@ LeftExpandingPopup {
                                                 text: modelData.name || modelData.mac
                                                 font.family: "SF Pro Display"
                                                 font.pixelSize: 13
-                                                color: "#e8e8e8"
+                                                color: BarColors.primaryText
                                                 elide: Text.ElideRight
                                                 Layout.fillWidth: true
                                             }
@@ -604,7 +604,7 @@ LeftExpandingPopup {
                                                 text: "Ready to pair"
                                                 font.family: "SF Pro Display"
                                                 font.pixelSize: 11
-                                                color: "#777777"
+                                                color: BarColors.secondaryText
                                                 elide: Text.ElideRight
                                                 Layout.fillWidth: true
                                             }
@@ -614,7 +614,7 @@ LeftExpandingPopup {
                                             text: "chevron_right"
                                             font.family: "Material Symbols Rounded"
                                             font.pixelSize: 16
-                                            color: "#777777"
+                                            color: BarColors.secondaryText
                                             Layout.alignment: Qt.AlignVCenter
                                         }
                                     }
@@ -628,7 +628,7 @@ LeftExpandingPopup {
                                         Rectangle {
                                             Layout.fillWidth: true
                                             height: 1
-                                            color: "#3d3d3d"
+                                            color: BarColors.hoverAndBorder
                                         }
 
                                         RowLayout {
@@ -639,7 +639,7 @@ LeftExpandingPopup {
                                                 text: modelData.mac
                                                 font.family: "SF Pro Display"
                                                 font.pixelSize: 11
-                                                color: "#777777"
+                                                color: BarColors.secondaryText
                                                 Layout.fillWidth: true
                                             }
 
@@ -655,7 +655,7 @@ LeftExpandingPopup {
                                                     font.family: "SF Pro Display"
                                                     font.bold: true
                                                     font.pixelSize: 11
-                                                    color: "#303030"
+                                                    color: BarColors.textOnAccent
                                                 }
 
                                                 MouseArea {

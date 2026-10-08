@@ -25,7 +25,7 @@ PanelWindow {
         right: 14
     }
 
-    color: "transparent"
+    color: BarColors.transparent
     exclusionMode: ExclusionMode.Ignore
     WlrLayershell.layer: WlrLayer.Overlay
 
@@ -194,7 +194,7 @@ PanelWindow {
                         width: 20
                         height: 20
                         radius: 10
-                        color: closeHover.containsMouse ? Theme.colors.bg3 : "transparent"
+                        color: closeHover.containsMouse ? Theme.colors.bg3 : BarColors.transparent
 
                         Text {
                             anchors.centerIn: parent

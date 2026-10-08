@@ -87,7 +87,7 @@ Item {
         id: pill
         anchors.fill: parent
         radius: height / 2
-        color: mouseArea.containsMouse ? "#3c3c3c" : "#343434"
+        color: mouseArea.containsMouse ? BarColors.hoverAndBorder : BarColors.surfaceBackground
 
         // Hand off immediately so the pill cannot ghost underneath the popup.
         visible: !root.anyOpen
@@ -100,7 +100,7 @@ Item {
             id: timeText
             anchors.centerIn: parent
             text: Time.time
-            color: "#e8e8e8"
+            color: BarColors.primaryText
             font.family: "SF Pro Display"
             font.bold: true
             font.pixelSize: 16
@@ -112,7 +112,7 @@ Item {
         barWindow: root.barWindow
         anchorItem: root
         collapsedWidth: root.compactWidth
-        collapsedColor: mouseArea.containsMouse ? "#3c3c3c" : "#343434"
+        collapsedColor: mouseArea.containsMouse ? BarColors.hoverAndBorder : BarColors.surfaceBackground
         onCloseFinished: root.finishClose()
     }
 
@@ -121,7 +121,7 @@ Item {
         barWindow: root.barWindow
         anchorItem: root
         collapsedWidth: root.compactWidth
-        collapsedColor: mouseArea.containsMouse ? "#3c3c3c" : "#343434"
+        collapsedColor: mouseArea.containsMouse ? BarColors.hoverAndBorder : BarColors.surfaceBackground
         onCloseFinished: root.finishClose()
     }
 
@@ -130,7 +130,7 @@ Item {
         barWindow: root.barWindow
         anchorItem: root
         collapsedWidth: root.compactWidth
-        collapsedColor: mouseArea.containsMouse ? "#3c3c3c" : "#343434"
+        collapsedColor: mouseArea.containsMouse ? BarColors.hoverAndBorder : BarColors.surfaceBackground
         onOpenRequested: root.togglePopup(themeSwitcherPopup)
         onCloseFinished: root.finishClose()
     }
@@ -140,7 +140,7 @@ Item {
         barWindow: root.barWindow
         anchorItem: root
         collapsedWidth: root.compactWidth
-        collapsedColor: mouseArea.containsMouse ? "#3c3c3c" : "#343434"
+        collapsedColor: mouseArea.containsMouse ? BarColors.hoverAndBorder : BarColors.surfaceBackground
         onOpenRequested: root.togglePopup(wallpaperSwitcherPopup)
         onCloseFinished: root.finishClose()
     }

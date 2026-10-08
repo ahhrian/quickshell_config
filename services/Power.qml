@@ -21,7 +21,7 @@ Singleton {
 
   readonly property color red_indicator: Theme.colors.red
   readonly property color yellow_indicator: Theme.colors.yellow
-  readonly property color default_color: "#ffffff"
+  readonly property color default_color: BarColors.primaryText
   
   function iconName() {
     if (device) {

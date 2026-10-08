@@ -94,7 +94,7 @@ Scope {
 
                 implicitHeight: 45
 
-                color: "transparent"
+                color: BarColors.transparent
 
                 DropdownController { id: rightDropdownController }
 

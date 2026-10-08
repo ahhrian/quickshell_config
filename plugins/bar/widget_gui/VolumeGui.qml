@@ -12,7 +12,7 @@ LeftExpandingPopup {
     targetWidth: 350
     maximumHeight: 520
     targetHeight: Math.min(card.implicitHeight, maximumHeight)
-    borderColor: "#3d3d3d"
+    borderColor: BarColors.hoverAndBorder
 
     onAboutToOpen: {
         if (visible) {
@@ -42,7 +42,7 @@ LeftExpandingPopup {
                     width: 40
                     height: 40
                     radius: 20
-                    color: "#303030"
+                    color: BarColors.surfaceBackground
 
                     Text {
                         anchors.centerIn: parent
@@ -72,7 +72,7 @@ LeftExpandingPopup {
                         text: "Volume Control"
                         font.pixelSize: 14
                         font.weight: Font.DemiBold
-                        color: "#e8e8e8"
+                        color: BarColors.primaryText
                     }
 
                     Text {
@@ -87,7 +87,7 @@ LeftExpandingPopup {
                             return "Output Device";
                         }
                         font.pixelSize: 11
-                        color: Audio.muted ? Theme.colors.red : "#777777"
+                        color: Audio.muted ? Theme.colors.red : BarColors.secondaryText
                         elide: Text.ElideRight
                     }
                 }
@@ -97,9 +97,9 @@ LeftExpandingPopup {
                     implicitWidth: 32
                     implicitHeight: 32
                     radius: 16
-                    color: muteBtnMouse.containsMouse ? "#3d3d3d" : "#303030"
+                    color: muteBtnMouse.containsMouse ? BarColors.hoverAndBorder : BarColors.surfaceBackground
                     border.width: 1
-                    border.color: Audio.muted ? Theme.colors.red : "#3d3d3d"
+                    border.color: Audio.muted ? Theme.colors.red : BarColors.hoverAndBorder
 
                     Behavior on color { ColorAnimation { duration: 120 } }
                     Behavior on border.color { ColorAnimation { duration: 120 } }
@@ -109,7 +109,7 @@ LeftExpandingPopup {
                         text: Audio.muted ? "volume_off" : "volume_up"
                         font.family: "Material Symbols Rounded"
                         font.pixelSize: 17
-                        color: Audio.muted ? Theme.colors.red : "#e8e8e8"
+                        color: Audio.muted ? Theme.colors.red : BarColors.primaryText
                     }
 
                     MouseArea {
@@ -128,9 +128,9 @@ LeftExpandingPopup {
                 Layout.fillWidth: true
                 implicitHeight: 46
                 radius: 12
-                color: "#303030"
+                color: BarColors.surfaceBackground
                 border.width: 1
-                border.color: "#3d3d3d"
+                border.color: BarColors.hoverAndBorder
 
                 RowLayout {
                     anchors.fill: parent
@@ -167,7 +167,7 @@ LeftExpandingPopup {
                             anchors.verticalCenter: parent.verticalCenter
                             height: 6
                             radius: 3
-                            color: "#3d3d3d"
+                            color: BarColors.hoverAndBorder
 
                             // Filled Progress Track
                             Rectangle {
@@ -190,7 +190,7 @@ LeftExpandingPopup {
                             radius: 8
                             anchors.verticalCenter: parent.verticalCenter
                             x: Math.max(0, Math.min(track.width - width, (track.width * Audio.volume) - (width / 2)))
-                            color: "#e8e8e8"
+                            color: BarColors.primaryText
                             border.width: 2
                             border.color: Audio.muted ? Theme.colors.red : Theme.colors.default_accent
 
@@ -230,7 +230,7 @@ LeftExpandingPopup {
                         text: Audio.muted ? "Muted" : (Audio.volumePercent + "%")
                         font.pixelSize: 12
                         font.weight: Font.DemiBold
-                        color: Audio.muted ? Theme.colors.red : "#e8e8e8"
+                        color: Audio.muted ? Theme.colors.red : BarColors.primaryText
                         Layout.minimumWidth: 42
                         horizontalAlignment: Text.AlignRight
                     }
@@ -241,7 +241,7 @@ LeftExpandingPopup {
             Rectangle {
                 Layout.fillWidth: true
                 height: 1
-                color: "#3d3d3d"
+                color: BarColors.hoverAndBorder
             }
 
             // ==================== 4. OUTPUT DEVICES SECTION ====================
@@ -253,7 +253,7 @@ LeftExpandingPopup {
                     text: "OUTPUT DEVICE"
                     font.pixelSize: 11
                     font.weight: Font.DemiBold
-                    color: "#777777"
+                    color: BarColors.secondaryText
                     Layout.fillWidth: true
                 }
 
@@ -261,14 +261,14 @@ LeftExpandingPopup {
                     width: 24
                     height: 24
                     radius: 12
-                    color: refreshMouse.containsMouse ? "#303030" : "transparent"
+                    color: refreshMouse.containsMouse ? BarColors.surfaceBackground : BarColors.transparent
 
                     Text {
                         anchors.centerIn: parent
                         text: "refresh"
                         font.family: "Material Symbols Rounded"
                         font.pixelSize: 15
-                        color: "#777777"
+                        color: BarColors.secondaryText
                     }
 
                     MouseArea {
@@ -308,7 +308,7 @@ LeftExpandingPopup {
                     contentItem: Rectangle {
                         implicitWidth: 3
                         radius: 1.5
-                        color: "#3d3d3d"
+                        color: BarColors.hoverAndBorder
                     }
                 }
 
@@ -327,9 +327,9 @@ LeftExpandingPopup {
                             Layout.fillWidth: true
                             implicitHeight: 52
                             radius: 12
-                            color: itemMouseArea.containsMouse ? "#303030" : (modelData.is_default ? "#303030" : "transparent")
+                            color: itemMouseArea.containsMouse ? BarColors.surfaceBackground : (modelData.is_default ? BarColors.surfaceBackground : BarColors.transparent)
                             border.width: 1
-                            border.color: modelData.is_default ? Theme.colors.default_accent: (itemMouseArea.containsMouse ? "#3d3d3d" : "transparent")
+                            border.color: modelData.is_default ? Theme.colors.default_accent: (itemMouseArea.containsMouse ? BarColors.hoverAndBorder : BarColors.transparent)
 
                             Behavior on color { ColorAnimation { duration: 120 } }
                             Behavior on border.color { ColorAnimation { duration: 120 } }
@@ -344,14 +344,14 @@ LeftExpandingPopup {
                                     width: 34
                                     height: 34
                                     radius: 17
-                                    color: modelData.is_default ? "#3d3d3d" : "#303030"
+                                    color: modelData.is_default ? BarColors.hoverAndBorder : BarColors.surfaceBackground
 
                                     Text {
                                         anchors.centerIn: parent
                                         text: modelData.icon || "volume_up"
                                         font.family: "Material Symbols Rounded"
                                         font.pixelSize: 18
-                                        color: modelData.is_default ? Theme.colors.default_accent: "#e8e8e8"
+                                        color: modelData.is_default ? Theme.colors.default_accent: BarColors.primaryText
                                     }
                                 }
 
@@ -365,7 +365,7 @@ LeftExpandingPopup {
                                         text: modelData.display_name || "Audio Device"
                                         font.pixelSize: 13
                                         font.weight: modelData.is_default ? Font.DemiBold : Font.Normal
-                                        color: "#e8e8e8"
+                                        color: BarColors.primaryText
                                         elide: Text.ElideRight
                                     }
 
@@ -373,7 +373,7 @@ LeftExpandingPopup {
                                         Layout.fillWidth: true
                                         text: modelData.is_default ? "Active Output" : (modelData.description || "Output Device")
                                         font.pixelSize: 11
-                                        color: modelData.is_default ? Theme.colors.default_accent: "#777777"
+                                        color: modelData.is_default ? Theme.colors.default_accent: BarColors.secondaryText
                                         elide: Text.ElideRight
                                     }
                                 }
@@ -383,9 +383,9 @@ LeftExpandingPopup {
                                     width: 22
                                     height: 22
                                     radius: 11
-                                    color: modelData.is_default ? Theme.colors.default_accent: "transparent"
+                                    color: modelData.is_default ? Theme.colors.default_accent: BarColors.transparent
                                     border.width: modelData.is_default ? 0 : 1.5
-                                    border.color: itemMouseArea.containsMouse ? "#777777" : "#3d3d3d"
+                                    border.color: itemMouseArea.containsMouse ? BarColors.secondaryText : BarColors.hoverAndBorder
 
                                     Behavior on color { ColorAnimation { duration: 120 } }
                                     Behavior on border.color { ColorAnimation { duration: 120 } }
@@ -396,7 +396,7 @@ LeftExpandingPopup {
                                         text: "check"
                                         font.family: "Material Symbols Rounded"
                                         font.pixelSize: 15
-                                        color: "#303030"
+                                        color: BarColors.textOnAccent
                                         font.weight: Font.Bold
                                     }
                                 }
@@ -423,13 +423,13 @@ LeftExpandingPopup {
                         Layout.fillWidth: true
                         implicitHeight: 48
                         radius: 10
-                        color: "#303030"
+                        color: BarColors.surfaceBackground
 
                         Text {
                             anchors.centerIn: parent
                             text: "No output devices found"
                             font.pixelSize: 12
-                            color: "#777777"
+                            color: BarColors.secondaryText
                         }
                     }
 
@@ -444,14 +444,14 @@ LeftExpandingPopup {
                             text: "info"
                             font.family: "Material Symbols Rounded"
                             font.pixelSize: 14
-                            color: "#777777"
+                            color: BarColors.secondaryText
                         }
 
                         Text {
                             text: "Connect headphones, Bluetooth, or HDMI to switch"
                             font.pixelSize: 11
                             font.italic: true
-                            color: "#777777"
+                            color: BarColors.secondaryText
                             Layout.fillWidth: true
                             elide: Text.ElideRight
                         }

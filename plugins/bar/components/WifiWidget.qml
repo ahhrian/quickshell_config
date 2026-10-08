@@ -16,7 +16,7 @@ TrayDropdownWidget {
         id: iconText
         anchors.centerIn: parent
         text: Wifi.icon
-        color: "#e8e8e8"
+        color: BarColors.primaryText
         font.family: "Material Symbols Rounded"
         font.pixelSize: 16
     }

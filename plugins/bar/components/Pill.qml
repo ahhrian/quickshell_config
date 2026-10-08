@@ -7,7 +7,7 @@ Rectangle {
     id: root
 
     property string icon: ""
-    property color iconColor: "#e8e8e8"
+    property color iconColor: BarColors.primaryText
     property string label: ""
     property bool labelBold: false
     property int maxLabelWidth: 400
@@ -21,11 +21,11 @@ Rectangle {
     implicitHeight: 33
     radius: height / 2
 
-    // color: "#303030"
-    color: "#343434"
+    // color: BarColors.surfaceBackground
+    color: BarColors.surfaceBackground
 
     // Native border support for the focused-workspace accent ring
-    property color borderColor: "transparent"
+    property color borderColor: BarColors.transparent
     property int borderWidth: 0
     border.color: borderColor
     border.width: borderWidth

@@ -21,7 +21,7 @@ PopupWindow {
     implicitWidth: 380
     implicitHeight: Math.min(card.implicitHeight, 560)
 
-    color: "transparent"
+    color: BarColors.transparent
     visible: false
     grabFocus: true
 
@@ -61,8 +61,8 @@ PopupWindow {
         width: 380
         implicitHeight: mainCol.implicitHeight + 24
         radius: 16
-        color: "#303030"
-        border.color: "#3d3d3d"
+        color: BarColors.surfaceBackground
+        border.color: BarColors.hoverAndBorder
         border.width: 1
         clip: true
 
@@ -89,7 +89,7 @@ PopupWindow {
                     font.family: "SF Pro Display"
                     font.pixelSize: 13
                     font.weight: Font.DemiBold
-                    color: "#e8e8e8"
+                    color: BarColors.primaryText
                 }
 
                 Item { Layout.fillWidth: true }
@@ -100,7 +100,7 @@ PopupWindow {
                     width: 44
                     height: 24
                     radius: 12
-                    color: Notifications.dnd ? Theme.colors.default_accent : "#3d3d3d"
+                    color: Notifications.dnd ? Theme.colors.default_accent : BarColors.hoverAndBorder
 
                     Behavior on color {
                         ColorAnimation { duration: 180 }
@@ -111,7 +111,7 @@ PopupWindow {
                         width: 20
                         height: 20
                         radius: 10
-                        color: "#e8e8e8"
+                        color: BarColors.primaryText
                         y: 2
                         x: Notifications.dnd ? 22 : 2
 
@@ -143,7 +143,7 @@ PopupWindow {
                     font.family: "SF Pro Display"
                     font.pixelSize: 14
                     font.weight: Font.Bold
-                    color: "#e8e8e8"
+                    color: BarColors.primaryText
                 }
 
                 // Notification count pill
@@ -156,7 +156,7 @@ PopupWindow {
                     implicitWidth: countText.implicitWidth + 12
                     implicitHeight: 18
                     radius: 9
-                    color: "#3d3d3d"
+                    color: BarColors.hoverAndBorder
 
                     Text {
                         id: countText
@@ -165,7 +165,7 @@ PopupWindow {
                         font.family: "SF Pro Display"
                         font.pixelSize: 11
                         font.weight: Font.Bold
-                        color: "#e8e8e8"
+                        color: BarColors.primaryText
                         opacity: 0.8
                     }
                 }
@@ -177,8 +177,8 @@ PopupWindow {
                     implicitWidth: clearText.implicitWidth + 20
                     implicitHeight: 28
                     radius: 8
-                    color: (clearMouse.containsMouse && Notifications.count > 0 && !root.isClearingAll) ? "#3d3d3d" : "#303030"
-                    border.color: "#3d3d3d"
+                    color: (clearMouse.containsMouse && Notifications.count > 0 && !root.isClearingAll) ? BarColors.hoverAndBorder : BarColors.surfaceBackground
+                    border.color: BarColors.hoverAndBorder
                     border.width: 1
                     opacity: (Notifications.count > 0 && !root.isClearingAll) ? 1.0 : 0.45
 
@@ -193,7 +193,7 @@ PopupWindow {
                         font.family: "SF Pro Display"
                         font.pixelSize: 12
                         font.weight: Font.Medium
-                        color: "#e8e8e8"
+                        color: BarColors.primaryText
                     }
 
                     MouseArea {
@@ -211,7 +211,7 @@ PopupWindow {
             Rectangle {
                 Layout.fillWidth: true
                 height: 1
-                color: "#3d3d3d"
+                color: BarColors.hoverAndBorder
                 opacity: 0.7
             }
 
@@ -232,7 +232,7 @@ PopupWindow {
                     Layout.alignment: Qt.AlignHCenter
                     font.family: "Material Symbols Rounded"
                     font.pixelSize: 48
-                    color: "#e8e8e8"
+                    color: BarColors.primaryText
                     opacity: 0.3
                     text: "notifications"
                 }
@@ -242,7 +242,7 @@ PopupWindow {
                     font.family: "SF Pro Display"
                     font.pixelSize: 13
                     font.weight: Font.Medium
-                    color: "#e8e8e8"
+                    color: BarColors.primaryText
                     opacity: 0.5
                     text: "No Notifications"
                 }
@@ -265,8 +265,8 @@ PopupWindow {
                     width: notifList.width
                     implicitHeight: cardContent.implicitHeight + 20
                     radius: 12
-                    color: cardHover.containsMouse ? "#3d3d3d" : "#303030"
-                    border.color: "#3d3d3d"
+                    color: cardHover.containsMouse ? BarColors.hoverAndBorder : BarColors.surfaceBackground
+                    border.color: BarColors.hoverAndBorder
                     border.width: 1
 
                     Behavior on color {
@@ -370,7 +370,7 @@ PopupWindow {
                                 visible: !appIconImg.visible
                                 font.family: "Material Symbols Rounded"
                                 font.pixelSize: 16
-                                color: "#e8e8e8"
+                                color: BarColors.primaryText
                                 opacity: 0.6
                                 text: "notifications"
                             }
@@ -380,7 +380,7 @@ PopupWindow {
                                 font.family: "SF Pro Display"
                                 font.pixelSize: 11
                                 font.weight: Font.Bold
-                                color: "#e8e8e8"
+                                color: BarColors.primaryText
                                 opacity: 0.75
                                 elide: Text.ElideRight
                             }
@@ -388,7 +388,7 @@ PopupWindow {
                             Text {
                                 text: "•"
                                 font.pixelSize: 11
-                                color: "#e8e8e8"
+                                color: BarColors.primaryText
                                 opacity: 0.4
                             }
 
@@ -396,7 +396,7 @@ PopupWindow {
                                 text: modelData ? Notifications.getTimeAgo(modelData.id) : "Just now"
                                 font.family: "SF Pro Display"
                                 font.pixelSize: 11
-                                color: "#e8e8e8"
+                                color: BarColors.primaryText
                                 opacity: 0.55
                             }
 
@@ -407,13 +407,13 @@ PopupWindow {
                                 width: 22
                                 height: 22
                                 radius: 11
-                                color: closeMouse.containsMouse ? "#3d3d3d" : "transparent"
+                                color: closeMouse.containsMouse ? BarColors.hoverAndBorder : BarColors.transparent
 
                                 Text {
                                     anchors.centerIn: parent
                                     font.family: "Material Symbols Rounded"
                                     font.pixelSize: 14
-                                    color: closeMouse.containsMouse ? Theme.colors.red : "#e8e8e8"
+                                    color: closeMouse.containsMouse ? Theme.colors.red : BarColors.primaryText
                                     opacity: closeMouse.containsMouse ? 1.0 : 0.5
                                     text: "close"
                                 }
@@ -438,7 +438,7 @@ PopupWindow {
                             font.family: "SF Pro Display"
                             font.pixelSize: 13
                             font.weight: Font.DemiBold
-                            color: "#e8e8e8"
+                            color: BarColors.primaryText
                             wrapMode: Text.Wrap
                             visible: text.length > 0
                         }
@@ -449,7 +449,7 @@ PopupWindow {
                             text: (modelData && modelData.body) ? modelData.body : ""
                             font.family: "SF Pro Display"
                             font.pixelSize: 12
-                            color: "#e8e8e8"
+                            color: BarColors.primaryText
                             opacity: 0.8
                             wrapMode: Text.Wrap
                             maximumLineCount: 4
@@ -470,7 +470,7 @@ PopupWindow {
                                     implicitHeight: 24
                                     implicitWidth: actionLabel.implicitWidth + 16
                                     radius: 6
-                                    color: actionMouse.containsMouse ? "#3d3d3d" : "#3d3d3d"
+                                    color: BarColors.hoverAndBorder
 
                                     Text {
                                         id: actionLabel
@@ -479,7 +479,7 @@ PopupWindow {
                                         font.family: "SF Pro Display"
                                         font.pixelSize: 11
                                         font.weight: Font.Medium
-                                        color: "#e8e8e8"
+                                        color: BarColors.primaryText
                                     }
 
                                     MouseArea {

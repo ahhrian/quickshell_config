@@ -48,7 +48,7 @@ TrayDropdownWidget {
             // Full 360 degree background track ring along the edge of the circular pill
             ctx.beginPath();
             ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-            ctx.strokeStyle = "#3d3d3d";
+            ctx.strokeStyle = BarColors.hoverAndBorder;
             ctx.lineWidth = strokeWidth;
             ctx.stroke();
 
@@ -63,7 +63,7 @@ TrayDropdownWidget {
                     const halfSweep = fraction * Math.PI; // At 50%, halfSweep is 90 deg -> 180 deg semicircle
                     ctx.arc(cx, cy, radius, topAngle - halfSweep, topAngle + halfSweep, false);
                 }
-                ctx.strokeStyle = Audio.muted ? "rgba(232,232,232,0.4)" : "#e8e8e8";
+                ctx.strokeStyle = Audio.muted ? BarColors.mutedIcon : BarColors.primaryText;
                 ctx.lineWidth = strokeWidth;
                 ctx.lineCap = "round";
                 ctx.stroke();
@@ -74,7 +74,7 @@ TrayDropdownWidget {
     Text {
         anchors.centerIn: parent
         text: Audio.icon
-        color: Audio.muted ? "#909090" : "#e8e8e8"
+        color: Audio.muted ? BarColors.secondaryText : BarColors.primaryText
         font.family: "Material Symbols Rounded"
         font.pixelSize: 16
 
@@ -90,7 +90,7 @@ TrayDropdownWidget {
         barWindow: root.barWindow
         anchorItem: root
         compactIcon: Audio.icon
-        compactIconColor: Audio.muted ? "#909090" : "#e8e8e8"
+        compactIconColor: Audio.muted ? BarColors.secondaryText : BarColors.primaryText
         compactColor: root.pillColor
     }
 

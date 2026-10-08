@@ -12,7 +12,7 @@ PopupWindow {
     property var barWindow: null
     property var anchorItem: null
     property real collapsedWidth: targetWidth
-    property color collapsedColor: "#343434"
+    property color collapsedColor: BarColors.surfaceBackground
     property int highlightedIndex: 0
     property bool closing: false
 
@@ -98,7 +98,7 @@ PopupWindow {
 
     implicitWidth: targetWidth + 2 * overshootPadding
     implicitHeight: targetHeight + overshootPadding
-    color: "transparent"
+    color: BarColors.transparent
     visible: false
     grabFocus: false
 
@@ -186,7 +186,7 @@ PopupWindow {
             anchors.horizontalCenter: parent.horizontalCenter
             y: (33 - height) / 2
             text: Time.time
-            color: "#e8e8e8"
+            color: BarColors.primaryText
             font.family: "SF Pro Display"
             font.pixelSize: 16
             font.bold: true
@@ -235,7 +235,7 @@ PopupWindow {
                             Layout.fillWidth: true
                             Layout.preferredHeight: 88
                             radius: 12
-                            color: selected ? Theme.colors.bg2 : (highlighted ? Theme.colors.bg1 : "transparent")
+                            color: selected ? Theme.colors.bg2 : (highlighted ? Theme.colors.bg1 : BarColors.transparent)
                             border.width: highlighted ? 2 : 1
                             border.color: highlighted ? Theme.colors.default_accent : Theme.colors.bg2
 
