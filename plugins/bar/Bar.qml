@@ -1,10 +1,81 @@
 import Quickshell
+import Quickshell.Hyprland
+import Quickshell.Io
 import QtQuick
 import QtQuick.Layouts
 import "../../shared"
 import "components"
 
 Scope {
+    id: root
+
+    property var clockWidgets: []
+
+    function registerClockWidget(widget) {
+        if (clockWidgets.indexOf(widget) === -1)
+            clockWidgets = clockWidgets.concat([widget]);
+    }
+
+    function unregisterClockWidget(widget) {
+        const remaining = [];
+        for (let i = 0; i < clockWidgets.length; i++) {
+            if (clockWidgets[i] !== widget)
+                remaining.push(clockWidgets[i]);
+        }
+        clockWidgets = remaining;
+    }
+
+    function focusedClockWidget() {
+        const focusedMonitor = Hyprland.focusedMonitor;
+        if (focusedMonitor) {
+            for (let i = 0; i < clockWidgets.length; i++) {
+                const widget = clockWidgets[i];
+                if (!widget || !widget.barWindow || !widget.barWindow.screen)
+                    continue;
+
+                const widgetMonitor = Hyprland.monitorFor(widget.barWindow.screen);
+                if (widgetMonitor && widgetMonitor.id === focusedMonitor.id)
+                    return widget;
+            }
+        }
+
+        // Hyprland may briefly have no focused monitor while outputs are being
+        // reconfigured. Keep IPC useful by falling back to the first live bar.
+        return clockWidgets.length > 0 ? clockWidgets[0] : null;
+    }
+
+    function routeSwitcher(kind, action) {
+        const target = focusedClockWidget();
+        if (!target)
+            return;
+
+        // A switcher previously opened on another output must not remain there
+        // when focus has moved to a different monitor.
+        for (let i = 0; i < clockWidgets.length; i++) {
+            const widget = clockWidgets[i];
+            if (widget && widget !== target)
+                widget.closeIpcSwitchers();
+        }
+
+        target.handleIpcSwitcher(kind, action);
+    }
+
+    IpcHandler {
+        target: "themeSwitcher"
+
+        function toggle(): void { root.routeSwitcher("theme", "toggle"); }
+        function open(): void { root.routeSwitcher("theme", "open"); }
+        function close(): void { root.routeSwitcher("theme", "close"); }
+    }
+
+    IpcHandler {
+        target: "wallpaperSwitcher"
+
+        function toggle(): void { root.routeSwitcher("wallpaper", "toggle"); }
+        function open(): void { root.routeSwitcher("wallpaper", "open"); }
+        function close(): void { root.routeSwitcher("wallpaper", "close"); }
+    }
+
     Variants {
         model: Quickshell.screens
 
@@ -49,7 +120,11 @@ Scope {
                     spacing: 6
 
                     ClockWidget {
+                        id: clockWidget
                         barWindow: barWindow
+
+                        Component.onCompleted: root.registerClockWidget(clockWidget)
+                        Component.onDestruction: root.unregisterClockWidget(clockWidget)
                     }
 
                     // NotificationWidget {

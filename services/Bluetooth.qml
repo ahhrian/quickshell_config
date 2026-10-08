@@ -44,7 +44,7 @@ Singleton {
         // if (root.connected) {
         //     return Theme.colors.secondary_accent;
         // }
-        return Theme.colors.secondary_accent;
+        return Theme.colors.default_accent;
     }
 
     function recheck() {

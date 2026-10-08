@@ -104,7 +104,7 @@ Singleton {
         if (!root.hasInternet) {
             return Theme.colors.red;
         }
-        return Theme.colors.secondary_accent;
+        return Theme.colors.default_accent;
     }
 
     function updateState(newConnected, newSsid, newSignal, newSpeed, newInternet, newEnabled) {

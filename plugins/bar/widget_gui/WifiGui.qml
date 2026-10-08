@@ -129,7 +129,7 @@ LeftExpandingPopup {
                     width: 46
                     height: 24
                     radius: 12
-                    color: Wifi.enabled ? Theme.colors.secondary_accent : "#3d3d3d"
+                    color: Wifi.enabled ? Theme.colors.default_accent : "#3d3d3d"
 
                     Behavior on color {
                         ColorAnimation { duration: 180 }
@@ -200,7 +200,7 @@ LeftExpandingPopup {
                         width: 100
                         height: 28
                         radius: 14
-                        color: Theme.colors.secondary_accent
+                        color: Theme.colors.default_accent
 
                         Text {
                             anchors.centerIn: parent
@@ -259,7 +259,7 @@ LeftExpandingPopup {
                                 radius: 10
                                 color: modelData.connected ? "#303030" : (knownMouse.containsMouse ? "#303030" : "transparent")
                                 border.width: modelData.connected ? 1 : 0
-                                border.color: Theme.colors.secondary_accent
+                                border.color: Theme.colors.default_accent
 
                                 readonly property bool isExpanded: (root.expandedSsid === modelData.ssid)
 
@@ -290,7 +290,7 @@ LeftExpandingPopup {
                                             text: root.getSignalIcon(modelData.signal)
                                             font.family: "Material Symbols Rounded"
                                             font.pixelSize: 18
-                                            color: modelData.connected ? Theme.colors.secondary_accent : "#e8e8e8"
+                                            color: modelData.connected ? Theme.colors.default_accent : "#e8e8e8"
                                             Layout.alignment: Qt.AlignVCenter
                                         }
 
@@ -313,7 +313,7 @@ LeftExpandingPopup {
                                                 text: modelData.connected ? "Connected" : (modelData.outOfRange ? "Not in range" : modelData.signal + "% signal")
                                                 font.family: "SF Pro Display"
                                                 font.pixelSize: 11
-                                                color: modelData.connected ? Theme.colors.secondary_accent : "#777777"
+                                                color: modelData.connected ? Theme.colors.default_accent : "#777777"
                                                 elide: Text.ElideRight
                                                 Layout.fillWidth: true
                                             }
@@ -358,7 +358,7 @@ LeftExpandingPopup {
                                                 width: 75
                                                 height: 26
                                                 radius: 6
-                                                color: Theme.colors.secondary_accent
+                                                color: Theme.colors.default_accent
                                                 visible: !modelData.connected && !modelData.outOfRange
 
                                                 Text {
@@ -478,7 +478,7 @@ LeftExpandingPopup {
                                         text: "add"
                                         font.family: "Material Symbols Rounded"
                                         font.pixelSize: 13
-                                        color: Theme.colors.secondary_accent
+                                        color: Theme.colors.default_accent
                                     }
                                     Text {
                                         text: "Hidden..."
@@ -606,7 +606,7 @@ LeftExpandingPopup {
                                             radius: 6
                                             color: "#303030"
                                             border.width: 1
-                                            border.color: pwdInput.activeFocus ? Theme.colors.secondary_accent : "#3d3d3d"
+                                            border.color: pwdInput.activeFocus ? Theme.colors.default_accent : "#3d3d3d"
                                             visible: modelData.secure
 
                                             RowLayout {
@@ -688,7 +688,7 @@ LeftExpandingPopup {
                                                 width: 75
                                                 height: 26
                                                 radius: 6
-                                                color: Theme.colors.secondary_accent
+                                                color: Theme.colors.default_accent
 
                                                 Text {
                                                     anchors.centerIn: parent

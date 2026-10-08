@@ -18,7 +18,7 @@ QtObject {
     readonly property color blue:   "#7fbbb3"
     readonly property color purple: "#d699b6"
 
-    readonly property color default_accent:   purple
-    readonly property color secondary_accent: aqua
+    readonly property color default_accent:   aqua
+    readonly property color secondary_accent: yellow
     readonly property color tertiary_accent:  blue
 }

@@ -6,18 +6,23 @@ import "../../../services"
 import "../../../shared"
 import "../widget_gui"
 import "../../themeSelector"
+import "../../wallpaperSwitcher"
 
 Item {
     id: root
 
     property var barWindow: null
 
-    readonly property bool anyOpen: calendarPopup.visible || clockGuiPopup.visible || themeSwitcherPopup.visible
+    readonly property bool anyOpen: calendarPopup.visible || clockGuiPopup.visible
+                                    || themeSwitcherPopup.visible || wallpaperSwitcherPopup.visible
     readonly property int compactWidth: timeText.implicitWidth + 34
     property var pendingPopup: null
 
     function togglePopup(popup) {
-        const current = calendarPopup.visible ? calendarPopup : (clockGuiPopup.visible ? clockGuiPopup : (themeSwitcherPopup.visible ? themeSwitcherPopup : null));
+        const current = calendarPopup.visible ? calendarPopup
+                                              : (clockGuiPopup.visible ? clockGuiPopup
+                                                                      : (themeSwitcherPopup.visible ? themeSwitcherPopup
+                                                                                                    : (wallpaperSwitcherPopup.visible ? wallpaperSwitcherPopup : null)));
         pendingPopup = null;
         if (current === popup) {
             if (popup.closing)
@@ -37,6 +42,38 @@ Item {
         pendingPopup = null;
         if (next)
             next.openPopup();
+    }
+
+    function switcherForKind(kind) {
+        return kind === "wallpaper" ? wallpaperSwitcherPopup : themeSwitcherPopup;
+    }
+
+    function handleIpcSwitcher(kind, action) {
+        const popup = switcherForKind(kind);
+
+        if (action === "close") {
+            if (popup.visible)
+                popup.closePopup();
+            return;
+        }
+
+        if (action === "open") {
+            if (!popup.visible || popup.closing)
+                popup.requestOpen();
+            return;
+        }
+
+        if (popup.visible && !popup.closing)
+            popup.closePopup();
+        else
+            popup.requestOpen();
+    }
+
+    function closeIpcSwitchers() {
+        if (themeSwitcherPopup.visible)
+            themeSwitcherPopup.closePopup();
+        if (wallpaperSwitcherPopup.visible)
+            wallpaperSwitcherPopup.closePopup();
     }
 
     // Keep the popup anchor stationary; expansion belongs to the popup surface.
@@ -95,6 +132,16 @@ Item {
         collapsedWidth: root.compactWidth
         collapsedColor: mouseArea.containsMouse ? "#3c3c3c" : "#343434"
         onOpenRequested: root.togglePopup(themeSwitcherPopup)
+        onCloseFinished: root.finishClose()
+    }
+
+    WallpaperSwitcher {
+        id: wallpaperSwitcherPopup
+        barWindow: root.barWindow
+        anchorItem: root
+        collapsedWidth: root.compactWidth
+        collapsedColor: mouseArea.containsMouse ? "#3c3c3c" : "#343434"
+        onOpenRequested: root.togglePopup(wallpaperSwitcherPopup)
         onCloseFinished: root.finishClose()
     }
 

@@ -49,7 +49,7 @@ LeftExpandingPopup {
                         text: Audio.icon
                         font.family: "Material Symbols Rounded"
                         font.pixelSize: 22
-                        color: Audio.muted ? Theme.colors.red : Theme.colors.secondary_accent
+                        color: Audio.muted ? Theme.colors.red : Theme.colors.default_accent
 
                         Behavior on color {
                             ColorAnimation { duration: 150 }
@@ -143,7 +143,7 @@ LeftExpandingPopup {
                         text: Audio.icon
                         font.family: "Material Symbols Rounded"
                         font.pixelSize: 20
-                        color: Audio.muted ? Theme.colors.red : Theme.colors.secondary_accent
+                        color: Audio.muted ? Theme.colors.red : Theme.colors.default_accent
 
                         Behavior on color { ColorAnimation { duration: 150 } }
 
@@ -176,7 +176,7 @@ LeftExpandingPopup {
                                 anchors.bottom: parent.bottom
                                 width: Math.max(0, Math.min(trackBg.width, trackBg.width * Audio.volume))
                                 radius: 3
-                                color: Audio.muted ? Theme.colors.red : Theme.colors.secondary_accent
+                                color: Audio.muted ? Theme.colors.red : Theme.colors.default_accent
 
                                 Behavior on color { ColorAnimation { duration: 150 } }
                             }
@@ -192,7 +192,7 @@ LeftExpandingPopup {
                             x: Math.max(0, Math.min(track.width - width, (track.width * Audio.volume) - (width / 2)))
                             color: "#e8e8e8"
                             border.width: 2
-                            border.color: Audio.muted ? Theme.colors.red : Theme.colors.secondary_accent
+                            border.color: Audio.muted ? Theme.colors.red : Theme.colors.default_accent
 
                             Behavior on border.color { ColorAnimation { duration: 150 } }
                         }
@@ -329,7 +329,7 @@ LeftExpandingPopup {
                             radius: 12
                             color: itemMouseArea.containsMouse ? "#303030" : (modelData.is_default ? "#303030" : "transparent")
                             border.width: 1
-                            border.color: modelData.is_default ? Theme.colors.secondary_accent : (itemMouseArea.containsMouse ? "#3d3d3d" : "transparent")
+                            border.color: modelData.is_default ? Theme.colors.default_accent: (itemMouseArea.containsMouse ? "#3d3d3d" : "transparent")
 
                             Behavior on color { ColorAnimation { duration: 120 } }
                             Behavior on border.color { ColorAnimation { duration: 120 } }
@@ -351,7 +351,7 @@ LeftExpandingPopup {
                                         text: modelData.icon || "volume_up"
                                         font.family: "Material Symbols Rounded"
                                         font.pixelSize: 18
-                                        color: modelData.is_default ? Theme.colors.secondary_accent : "#e8e8e8"
+                                        color: modelData.is_default ? Theme.colors.default_accent: "#e8e8e8"
                                     }
                                 }
 
@@ -373,7 +373,7 @@ LeftExpandingPopup {
                                         Layout.fillWidth: true
                                         text: modelData.is_default ? "Active Output" : (modelData.description || "Output Device")
                                         font.pixelSize: 11
-                                        color: modelData.is_default ? Theme.colors.secondary_accent : "#777777"
+                                        color: modelData.is_default ? Theme.colors.default_accent: "#777777"
                                         elide: Text.ElideRight
                                     }
                                 }
@@ -383,7 +383,7 @@ LeftExpandingPopup {
                                     width: 22
                                     height: 22
                                     radius: 11
-                                    color: modelData.is_default ? Theme.colors.secondary_accent : "transparent"
+                                    color: modelData.is_default ? Theme.colors.default_accent: "transparent"
                                     border.width: modelData.is_default ? 0 : 1.5
                                     border.color: itemMouseArea.containsMouse ? "#777777" : "#3d3d3d"
 

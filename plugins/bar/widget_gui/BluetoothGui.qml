@@ -142,7 +142,7 @@ LeftExpandingPopup {
                     width: 46
                     height: 24
                     radius: 12
-                    color: Bluetooth.enabled ? Theme.colors.secondary_accent : "#3d3d3d"
+                    color: Bluetooth.enabled ? Theme.colors.default_accent : "#3d3d3d"
 
                     Behavior on color {
                         ColorAnimation { duration: 180 }
@@ -212,7 +212,7 @@ LeftExpandingPopup {
                         width: 100
                         height: 28
                         radius: 14
-                        color: Theme.colors.secondary_accent
+                        color: Theme.colors.default_accent
 
                         Text {
                             anchors.centerIn: parent
@@ -292,7 +292,7 @@ LeftExpandingPopup {
                                 radius: 10
                                 color: modelData.connected ? "#303030" : (pairedMouse.containsMouse ? "#303030" : "transparent")
                                 border.width: modelData.connected ? 1 : 0
-                                border.color: Theme.colors.secondary_accent
+                                border.color: Theme.colors.default_accent
 
                                 readonly property bool isExpanded: (root.expandedMac === modelData.mac)
 
@@ -323,7 +323,7 @@ LeftExpandingPopup {
                                             text: root.getDeviceMaterialIcon(modelData.icon)
                                             font.family: "Material Symbols Rounded"
                                             font.pixelSize: 20
-                                            color: modelData.connected ? Theme.colors.secondary_accent : "#e8e8e8"
+                                            color: modelData.connected ? Theme.colors.default_accent : "#e8e8e8"
                                             Layout.alignment: Qt.AlignVCenter
                                         }
 
@@ -355,7 +355,7 @@ LeftExpandingPopup {
                                                 }
                                                 font.family: "SF Pro Display"
                                                 font.pixelSize: 11
-                                                color: modelData.connected ? Theme.colors.secondary_accent : "#777777"
+                                                color: modelData.connected ? Theme.colors.default_accent : "#777777"
                                                 elide: Text.ElideRight
                                                 Layout.fillWidth: true
                                             }
@@ -366,7 +366,7 @@ LeftExpandingPopup {
                                             text: modelData.connected ? "check_circle" : "chevron_right"
                                             font.family: "Material Symbols Rounded"
                                             font.pixelSize: 16
-                                            color: modelData.connected ? Theme.colors.secondary_accent : "#777777"
+                                            color: modelData.connected ? Theme.colors.default_accent : "#777777"
                                             Layout.alignment: Qt.AlignVCenter
                                         }
                                     }
@@ -400,7 +400,7 @@ LeftExpandingPopup {
                                                 width: 80
                                                 height: 26
                                                 radius: 6
-                                                color: Theme.colors.secondary_accent
+                                                color: Theme.colors.default_accent
                                                 visible: !modelData.connected
 
                                                 Text {
@@ -509,7 +509,7 @@ LeftExpandingPopup {
                                 text: Bluetooth.scanning ? "Scanning..." : ""
                                 font.family: "SF Pro Display"
                                 font.pixelSize: 11
-                                color: Theme.colors.secondary_accent
+                                color: Theme.colors.default_accent
                                 visible: Bluetooth.scanning
                             }
                         }
@@ -647,7 +647,7 @@ LeftExpandingPopup {
                                                 width: 95
                                                 height: 26
                                                 radius: 6
-                                                color: Theme.colors.secondary_accent
+                                                color: Theme.colors.default_accent
 
                                                 Text {
                                                     anchors.centerIn: parent

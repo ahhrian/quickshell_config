@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
-import Quickshell.Io
 
 import "../../services"
 import "../../shared"
@@ -48,7 +47,9 @@ PopupWindow {
     function selectHighlighted() {
         if (highlightedIndex < 0 || highlightedIndex >= Theme.availableThemes.length)
             return;
-        Theme.setTheme(Theme.availableThemes[highlightedIndex].id);
+        const selectedTheme = Theme.availableThemes[highlightedIndex].id;
+        Theme.setTheme(selectedTheme);
+        Wallpaper.applyForTheme(selectedTheme);
         closePopup();
     }
 
@@ -111,20 +112,6 @@ PopupWindow {
             if (active)
                 Qt.callLater(root.acquireKeyboardFocus);
         }
-    }
-
-    IpcHandler {
-        target: "themeSwitcher"
-
-        function toggle(): void {
-            if (root.visible && !root.closing)
-                root.closePopup();
-            else
-                root.requestOpen();
-        }
-
-        function open(): void { root.requestOpen(); }
-        function close(): void { root.closePopup(); }
     }
 
     onVisibleChanged: {
