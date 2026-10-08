@@ -76,6 +76,14 @@ Scope {
         function close(): void { root.routeSwitcher("wallpaper", "close"); }
     }
 
+    IpcHandler {
+        target: "appLauncher"
+
+        function toggle(): void { root.routeSwitcher("app", "toggle"); }
+        function open(): void { root.routeSwitcher("app", "open"); }
+        function close(): void { root.routeSwitcher("app", "close"); }
+    }
+
     Variants {
         model: Quickshell.screens
 

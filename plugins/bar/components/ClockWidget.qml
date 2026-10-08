@@ -7,6 +7,7 @@ import "../../../shared"
 import "../widget_gui"
 import "../../themeSelector"
 import "../../wallpaperSwitcher"
+import "../../appLauncher"
 
 Item {
     id: root
@@ -15,6 +16,7 @@ Item {
 
     readonly property bool anyOpen: calendarPopup.visible || clockGuiPopup.visible
                                     || themeSwitcherPopup.visible || wallpaperSwitcherPopup.visible
+                                    || appLauncherPopup.visible
     readonly property int compactWidth: timeText.implicitWidth + 34
     property var pendingPopup: null
 
@@ -22,7 +24,8 @@ Item {
         const current = calendarPopup.visible ? calendarPopup
                                               : (clockGuiPopup.visible ? clockGuiPopup
                                                                       : (themeSwitcherPopup.visible ? themeSwitcherPopup
-                                                                                                    : (wallpaperSwitcherPopup.visible ? wallpaperSwitcherPopup : null)));
+                                                                                                    : (wallpaperSwitcherPopup.visible ? wallpaperSwitcherPopup
+                                                                                                                                      : (appLauncherPopup.visible ? appLauncherPopup : null))));
         pendingPopup = null;
         if (current === popup) {
             if (popup.closing)
@@ -45,7 +48,11 @@ Item {
     }
 
     function switcherForKind(kind) {
-        return kind === "wallpaper" ? wallpaperSwitcherPopup : themeSwitcherPopup;
+        if (kind === "wallpaper")
+            return wallpaperSwitcherPopup;
+        if (kind === "app")
+            return appLauncherPopup;
+        return themeSwitcherPopup;
     }
 
     function handleIpcSwitcher(kind, action) {
@@ -74,6 +81,8 @@ Item {
             themeSwitcherPopup.closePopup();
         if (wallpaperSwitcherPopup.visible)
             wallpaperSwitcherPopup.closePopup();
+        if (appLauncherPopup.visible)
+            appLauncherPopup.closePopup();
     }
 
     // Keep the popup anchor stationary; expansion belongs to the popup surface.
@@ -142,6 +151,16 @@ Item {
         collapsedWidth: root.compactWidth
         collapsedColor: mouseArea.containsMouse ? BarColors.hoverAndBorder : BarColors.surfaceBackground
         onOpenRequested: root.togglePopup(wallpaperSwitcherPopup)
+        onCloseFinished: root.finishClose()
+    }
+
+    AppLauncher {
+        id: appLauncherPopup
+        barWindow: root.barWindow
+        anchorItem: root
+        collapsedWidth: root.compactWidth
+        collapsedColor: mouseArea.containsMouse ? BarColors.hoverAndBorder : BarColors.surfaceBackground
+        onOpenRequested: root.togglePopup(appLauncherPopup)
         onCloseFinished: root.finishClose()
     }
 
