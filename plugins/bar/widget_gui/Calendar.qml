@@ -71,10 +71,22 @@ PopupWindow {
         closeAnimation.restart();
     }
 
+    function acquireKeyboardFocus() {
+        // The focus grab routes keyboard input to this window; item focus then
+        // routes it to the card's Keys handlers.
+        card.forceActiveFocus();
+    }
+
     HyprlandFocusGrab {
         id: focusGrab
-        windows: root.barWindow ? [root, root.barWindow] : [root]
+        // Do not include the bar: Hyprland could otherwise choose it instead
+        // of this popup as the keyboard-focused surface.
+        windows: [root]
         onCleared: root.closePopup()
+        onActiveChanged: {
+            if (active)
+                Qt.callLater(root.acquireKeyboardFocus);
+        }
     }
 
     onVisibleChanged: {

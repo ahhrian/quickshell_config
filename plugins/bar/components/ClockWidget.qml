@@ -5,18 +5,19 @@ import QtQuick.Layouts
 import "../../../services"
 import "../../../shared"
 import "../widget_gui"
+import "../../themeSelector"
 
 Item {
     id: root
 
     property var barWindow: null
 
-    readonly property bool anyOpen: calendarPopup.visible || clockGuiPopup.visible
+    readonly property bool anyOpen: calendarPopup.visible || clockGuiPopup.visible || themeSwitcherPopup.visible
     readonly property int compactWidth: timeText.implicitWidth + 34
     property var pendingPopup: null
 
     function togglePopup(popup) {
-        const current = calendarPopup.visible ? calendarPopup : (clockGuiPopup.visible ? clockGuiPopup : null);
+        const current = calendarPopup.visible ? calendarPopup : (clockGuiPopup.visible ? clockGuiPopup : (themeSwitcherPopup.visible ? themeSwitcherPopup : null));
         pendingPopup = null;
         if (current === popup) {
             if (popup.closing)
@@ -84,6 +85,16 @@ Item {
         anchorItem: root
         collapsedWidth: root.compactWidth
         collapsedColor: mouseArea.containsMouse ? "#3c3c3c" : "#343434"
+        onCloseFinished: root.finishClose()
+    }
+
+    ThemeSwitcher {
+        id: themeSwitcherPopup
+        barWindow: root.barWindow
+        anchorItem: root
+        collapsedWidth: root.compactWidth
+        collapsedColor: mouseArea.containsMouse ? "#3c3c3c" : "#343434"
+        onOpenRequested: root.togglePopup(themeSwitcherPopup)
         onCloseFinished: root.finishClose()
     }
 
