@@ -185,6 +185,12 @@ Pill {
         return arr;
     }
 
+    /*
+     * Custom workspace icon mapping (temporarily disabled).
+     *
+     * Keep this block in place so workspaceIcons.jsonc and its Nerd Font
+     * lookup can be restored later without recreating the mapping support.
+
     // Watch and load workspaceIcons.jsonc
     FileView {
         id: iconConfigFile
@@ -294,6 +300,45 @@ Pill {
             || Quickshell.iconPath("system-run", true)
             || "";
     }
+    */
+
+    // Resolve only the application's default icon from its system desktop
+    // entry or, when no desktop entry matches, from the system icon theme.
+    function resolveSystemAppIcon(w) {
+        if (!w) return "";
+
+        const candidates = [
+            w.wayland?.appId,
+            w.lastIpcObject?.class,
+            w.lastIpcObject?.initialClass
+        ].filter(id => id && id.length > 0);
+
+        for (const candidate of candidates) {
+            const id = candidate.endsWith(".desktop")
+                     ? candidate.slice(0, -8)
+                     : candidate;
+            const entry = DesktopEntries.heuristicLookup(candidate)
+                       || DesktopEntries.heuristicLookup(id)
+                       || DesktopEntries.byId(candidate)
+                       || DesktopEntries.byId(id);
+
+            if (entry && entry.icon) {
+                const desktopIcon = Quickshell.iconPath(entry.icon, true);
+                if (desktopIcon)
+                    return desktopIcon;
+            }
+
+            const themedIcon = Quickshell.iconPath(candidate, true)
+                            || Quickshell.iconPath(id, true)
+                            || Quickshell.iconPath(id.toLocaleLowerCase(), true);
+            if (themedIcon)
+                return themedIcon;
+        }
+
+        return Quickshell.iconPath("application-x-executable", true)
+            || Quickshell.iconPath("system-run", true)
+            || "";
+    }
 
     // Layout for individual Workspace Pills
     RowLayout {
@@ -362,20 +407,18 @@ Pill {
 
                 readonly property bool isOccupied: workspaceApps.length > 0
 
-                // Resolve open apps: Nerd Font icon from workspaceIcons.jsonc or fallback to natural app icon
+                // Resolve every open app from its system desktop entry.
                 readonly property var openApps: {
-                    const _ = root.rewriteMap; // Bind reactivity to config file changes
                     const list = [];
                     for (const w of workspaceApps) {
-                        const nerd = root.findNerdFontIcon(w);
-                        if (nerd) {
-                            list.push({ isNerdFont: true, icon: nerd });
-                        } else {
-                            const nat = root.resolveNaturalAppIcon(w);
-                            if (nat) {
-                                list.push({ isNerdFont: false, icon: nat });
-                            }
-                        }
+                        // Disabled custom mapping path (kept for easy restoration):
+                        // const nerd = root.findNerdFontIcon(w);
+                        // if (nerd)
+                        //     list.push({ isNerdFont: true, icon: nerd });
+
+                        const systemIcon = root.resolveSystemAppIcon(w);
+                        if (systemIcon)
+                            list.push({ isNerdFont: false, icon: systemIcon });
                     }
                     return list;
                 }
