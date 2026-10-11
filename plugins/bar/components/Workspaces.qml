@@ -19,7 +19,8 @@ Pill {
     Layout.preferredWidth: implicitWidth
 
     // Outer container pill is slightly darker than the inner workspace pills
-    color: BarColors.deepBackground
+    // color: BarColors.deepBackground
+    color: "transparent"
 
     Behavior on implicitWidth {
         NumberAnimation {

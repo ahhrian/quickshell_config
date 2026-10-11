@@ -7,8 +7,10 @@ QtObject {
     readonly property color transparent: "transparent"
 
     // Three background states used throughout the bar and its popups.
-    readonly property color deepBackground: "#202020"
-    readonly property color surfaceBackground: "#303030"
+    readonly property color deepBackground: "#101010"
+    // readonly property color deepBackground: "transparent"
+    // readonly property color deepBackground: "#303030"
+    readonly property color surfaceBackground: "#202020"
     readonly property color hoverAndBorder: "#3d3d3d"
 
     // Three text roles: normal content, de-emphasized content, and text on accents.
