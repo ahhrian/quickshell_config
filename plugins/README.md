@@ -127,7 +127,7 @@ Displays four horizontal options using monochrome shell colors:
 
 | Option | Command |
 | --- | --- |
-| Suspend | `systemctl suspend` |
+| Suspend | Acquire `lockScreen`, wait for the compositor-secure state, then run `systemctl suspend` |
 | Logout | `hyprctl dispatch exit` |
 | Restart | `systemctl reboot` |
 | Shutdown | `systemctl poweroff` |

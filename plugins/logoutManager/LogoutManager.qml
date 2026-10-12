@@ -29,7 +29,19 @@ PopupWindow {
             id: "suspend",
             label: "Suspend",
             icon: "bedtime",
-            command: ["systemctl", "suspend"]
+            // Acquire the compositor session lock before suspending. Polling
+            // its secure state avoids exposing the session briefly on wake.
+            command: [
+                "sh",
+                "-c",
+                "qs ipc call lockScreen lock || exit 1; "
+                    + "attempt=0; "
+                    + "while [ \"$attempt\" -lt 100 ]; do "
+                    + "lock_status=\"$(qs ipc call lockScreen status 2>/dev/null)\"; "
+                    + "case \"$lock_status\" in *'\"secure\":true'*) exec systemctl suspend ;; esac; "
+                    + "attempt=$((attempt + 1)); sleep 0.05; "
+                    + "done; exit 1"
+            ]
         },
         {
             id: "logout",
