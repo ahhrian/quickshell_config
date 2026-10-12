@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
+import Quickshell.Io
 
 import "../../services"
 import "../../shared"
@@ -22,6 +23,8 @@ PopupWindow {
     readonly property int closeDuration: 170
     readonly property real animationOvershoot: 0.8
     readonly property int overshootPadding: 12
+    readonly property string applyThemeScript: (Quickshell.env("HOME") || "/home/aryan")
+                                                + "/.config/quickshell/plugins/themeSelector/apply-theme.sh"
     property real expansionProgress: 0
     readonly property real contentProgress: Math.max(0, Math.min(1, expansionProgress))
     readonly property real animatedWidth: collapsedWidth + (targetWidth - collapsedWidth) * expansionProgress
@@ -47,9 +50,22 @@ PopupWindow {
     function selectHighlighted() {
         if (highlightedIndex < 0 || highlightedIndex >= Theme.availableThemes.length)
             return;
+
         const selectedTheme = Theme.availableThemes[highlightedIndex].id;
+        let wallpaperPath = Wallpaper.wallpaperForTheme(selectedTheme);
+        if (wallpaperPath.length === 0) {
+            wallpaperPath = Wallpaper.firstWallpaperForTheme(selectedTheme);
+            if (wallpaperPath.length > 0)
+                Wallpaper.rememberWallpaper(selectedTheme, wallpaperPath);
+        }
+
         Theme.setTheme(selectedTheme);
-        Wallpaper.applyForTheme(selectedTheme);
+        themeApplyProcess.exec([
+            "bash",
+            root.applyThemeScript,
+            selectedTheme,
+            wallpaperPath
+        ]);
         closePopup();
     }
 
@@ -111,6 +127,15 @@ PopupWindow {
         onActiveChanged: {
             if (active)
                 Qt.callLater(root.acquireKeyboardFocus);
+        }
+    }
+
+    Process {
+        id: themeApplyProcess
+
+        onExited: (code, status) => {
+            if (code !== 0)
+                console.warn("Theme settings script exited with code", code);
         }
     }
 

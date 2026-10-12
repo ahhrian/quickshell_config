@@ -167,7 +167,9 @@ The preserved `workspaceIcons.jsonc` Nerd Font mapping is currently commented ou
 
 `Theme.qml` exposes `availableThemes`, `currentTheme`, `colors`, `paletteFor()`, and `setTheme()`. The available IDs are `catpuccin` and `everforest`.
 
-When `ThemeSwitcher` selects a theme, it also calls `Wallpaper.applyForTheme()`. `Wallpaper.qml` remembers the last wallpaper independently for each theme in `Quickshell.statePath("wallpaper-history.json")`. Wallpapers live in:
+When `ThemeSwitcher` selects a theme, it passes the theme ID and its remembered wallpaper to `plugins/themeSelector/apply-theme.sh`. This script is the central integration point for settings outside Quickshell: it applies the wallpaper; repoints Kitty's `~/.config/kitty/colors` include and reloads existing Kitty processes; and repoints Hyprland's `~/.config/hypr/colors.lua` module to `~/.config/hypr/themes/<theme>.lua` so decoration accents follow the selection. Add future application theme updates to separate labeled sections in this script.
+
+`Wallpaper.qml` remembers the last wallpaper independently for each theme in `Quickshell.statePath("wallpaper-history.json")`. Wallpapers live in:
 
 ```text
 ~/Pictures/Wallpapers/catpuccin

@@ -436,7 +436,7 @@ Pill {
 
                 // Use the Pill's native border for the focus accent ring
                 // (follows the pill radius perfectly)
-                borderWidth: wsPill.isFocused ? 2 : 0
+                borderWidth: wsPill.isFocused ? 3 : 0
                 borderColor: wsPill.isFocused ? layout.focus_border : BarColors.transparent
 
                 Behavior on borderWidth {

@@ -4,7 +4,7 @@ This directory contains the top bar, four keybind-driven popup plugins, and a se
 
 | Folder | Component | IPC target | Purpose |
 | --- | --- | --- | --- |
-| `themeSelector/` | `ThemeSwitcher.qml` | `themeSwitcher` | Select Catppuccin or Everforest and restore that theme's wallpaper. |
+| `themeSelector/` | `ThemeSwitcher.qml`, `apply-theme.sh` | `themeSwitcher` | Select a palette and apply its wallpaper and application settings. |
 | `wallpaperSwitcher/` | `WallpaperSwitcher.qml` | `wallpaperSwitcher` | Browse and apply wallpapers for the active theme. |
 | `appLauncher/` | `AppLauncher.qml` | `appLauncher` | Search and launch desktop applications. |
 | `logoutManager/` | `LogoutManager.qml` | `logoutManager` | Suspend, leave Hyprland, reboot, or power off. |
@@ -78,10 +78,10 @@ Displays `Theme.availableThemes` horizontally. Each option contains its display 
 Controls:
 
 - Left/Right or Up/Down: move highlight with wraparound.
-- Enter/Return or click: call `Theme.setTheme(id)`, then `Wallpaper.applyForTheme(id)`, then close.
+- Enter/Return or click: call `Theme.setTheme(id)`, run `apply-theme.sh <id> <remembered-wallpaper>`, then close.
 - Escape: close.
 
-The active theme is currently not persisted across a full Quickshell restart; Catppuccin is the default. Wallpaper selections are persisted per theme.
+The active theme is currently not persisted across a full Quickshell restart; Catppuccin is the default. Wallpaper selections are persisted per theme. `apply-theme.sh` is the central place for side effects outside Quickshell: it restores the selected theme's wallpaper through `awww`; atomically repoints `~/.config/kitty/colors` to `~/.config/kitty/themes/<theme>.conf` and reloads running Kitty processes; and repoints `~/.config/hypr/colors.lua` to `~/.config/hypr/themes/<theme>.lua` for theme-aware decoration accents. Keep future application-specific theme updates in clearly labeled sections of that script.
 
 ## `WallpaperSwitcher.qml`
 
