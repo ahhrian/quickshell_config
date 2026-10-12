@@ -86,11 +86,16 @@ if [[ -f "$starship_base" && -f "$starship_theme" ]]; then
             # Independent Kitty processes append their PID when the configured
             # listen_on address is already represented by a base name, yielding
             # sockets such as /tmp/mykitty-8135. Refresh every live endpoint.
-            kitty_sockets=("/tmp/mykitty" /tmp/mykitty-*)
+            # Kitty matches against the complete foreground command line.
+            # Use an unanchored query so it covers both `bash` and forms such
+            # as `bash --posix -i`; send-text otherwise succeeds silently even
+            # when its matcher selects no windows.
+            kitty_socket_base=${QS_KITTY_SOCKET_BASE:-/tmp/mykitty}
+            kitty_sockets=("$kitty_socket_base" "$kitty_socket_base"-*)
             for kitty_socket in "${kitty_sockets[@]}"; do
                 [[ -S "$kitty_socket" ]] || continue
                 kitty @ --to "unix:$kitty_socket" send-text \
-                    --match 'cmdline:(^|/)bash$' '\x03' \
+                    --match 'cmdline:bash' '\x03' \
                     >/dev/null 2>&1 || true
             done
         else
