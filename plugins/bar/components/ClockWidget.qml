@@ -8,6 +8,7 @@ import "../widget_gui"
 import "../../themeSelector"
 import "../../wallpaperSwitcher"
 import "../../appLauncher"
+import "../../logoutManager"
 
 Item {
     id: root
@@ -16,7 +17,7 @@ Item {
 
     readonly property bool anyOpen: calendarPopup.visible || clockGuiPopup.visible
                                     || themeSwitcherPopup.visible || wallpaperSwitcherPopup.visible
-                                    || appLauncherPopup.visible
+                                    || appLauncherPopup.visible || logoutManagerPopup.visible
     readonly property int compactWidth: timeText.implicitWidth + 34
     property var pendingPopup: null
 
@@ -25,7 +26,8 @@ Item {
                                               : (clockGuiPopup.visible ? clockGuiPopup
                                                                       : (themeSwitcherPopup.visible ? themeSwitcherPopup
                                                                                                     : (wallpaperSwitcherPopup.visible ? wallpaperSwitcherPopup
-                                                                                                                                      : (appLauncherPopup.visible ? appLauncherPopup : null))));
+                                                                                                                                      : (appLauncherPopup.visible ? appLauncherPopup
+                                                                                                                                                                  : (logoutManagerPopup.visible ? logoutManagerPopup : null)))));
         pendingPopup = null;
         if (current === popup) {
             if (popup.closing)
@@ -52,6 +54,8 @@ Item {
             return wallpaperSwitcherPopup;
         if (kind === "app")
             return appLauncherPopup;
+        if (kind === "logout")
+            return logoutManagerPopup;
         return themeSwitcherPopup;
     }
 
@@ -83,6 +87,8 @@ Item {
             wallpaperSwitcherPopup.closePopup();
         if (appLauncherPopup.visible)
             appLauncherPopup.closePopup();
+        if (logoutManagerPopup.visible)
+            logoutManagerPopup.closePopup();
     }
 
     // Keep the popup anchor stationary; expansion belongs to the popup surface.
@@ -161,6 +167,16 @@ Item {
         collapsedWidth: root.compactWidth
         collapsedColor: mouseArea.containsMouse ? BarColors.hoverAndBorder : BarColors.surfaceBackground
         onOpenRequested: root.togglePopup(appLauncherPopup)
+        onCloseFinished: root.finishClose()
+    }
+
+    LogoutManager {
+        id: logoutManagerPopup
+        barWindow: root.barWindow
+        anchorItem: root
+        collapsedWidth: root.compactWidth
+        collapsedColor: mouseArea.containsMouse ? BarColors.hoverAndBorder : BarColors.surfaceBackground
+        onOpenRequested: root.togglePopup(logoutManagerPopup)
         onCloseFinished: root.finishClose()
     }
 
