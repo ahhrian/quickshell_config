@@ -84,6 +84,14 @@ Scope {
         function close(): void { root.routeSwitcher("app", "close"); }
     }
 
+    IpcHandler {
+        target: "logoutManager"
+
+        function toggle(): void { root.routeSwitcher("logout", "toggle"); }
+        function open(): void { root.routeSwitcher("logout", "open"); }
+        function close(): void { root.routeSwitcher("logout", "close"); }
+    }
+
     Variants {
         model: Quickshell.screens
 
