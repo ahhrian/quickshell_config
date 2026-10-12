@@ -1,0 +1,10 @@
+#%PAM-1.0
+
+# Install this template to /etc/pam.d/quickshell-lock with install-pam.sh.
+# It is based on Omarchy's dedicated password policy, adapted for Fedora.
+auth required pam_faillock.so preauth silent deny=10 unlock_time=120
+auth [success=1 default=bad] pam_unix.so try_first_pass nullok
+auth [default=die] pam_faillock.so authfail deny=10 unlock_time=120
+auth optional pam_permit.so
+auth required pam_env.so
+auth required pam_faillock.so authsucc

@@ -4,10 +4,15 @@ import Quickshell.Io
 import QtQuick
 import QtQuick.Layouts
 import "../../shared"
+import "../lockScreen"
 import "components"
 
 Scope {
     id: root
+
+    // Process-wide secure session lock. Its own IPC handler is intentionally
+    // outside the per-screen Variants so there is exactly one lock owner.
+    LockScreen {}
 
     property var clockWidgets: []
 

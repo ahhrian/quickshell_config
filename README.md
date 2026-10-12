@@ -1,149 +1,217 @@
-# Quickshell Desktop Bar & Services Architecture
+# Quickshell Desktop Shell
 
-This repository contains the complete [Quickshell](https://quickshell.org) configuration for Wayland / Hyprland, providing a high-performance, modular status bar, system services, and interactive GUI dropdowns.
+This repository is a modular Quickshell configuration for Hyprland. It provides a multi-monitor top bar, hardware and notification services, animated popup controls, an application launcher, theme and wallpaper selectors, a logout manager, and a PAM-authenticated Wayland session lock.
 
-> **AI Context & Fast-Path Orientation**:
-> When continuing work on this project in new sessions, read this document first. It summarizes the directory structure, singleton data flow, theming conventions, and component interaction models.
+This file is the starting point for a new contributor or agent with no prior context. Read the subsystem documents next:
 
----
+1. [`shared/README.md`](shared/README.md) — color ownership, theme palettes, typography, and UI rules.
+2. [`services/README.md`](services/README.md) — singleton state and system-control APIs.
+3. [`plugins/bar/README.md`](plugins/bar/README.md) — bar layout, widgets, workspace behavior, and dropdown internals.
+4. [`plugins/README.md`](plugins/README.md) — clock-anchored plugins, IPC endpoints, focus, and keyboard behavior.
 
-## 1. High-Level Architectural Flow
+## Runtime architecture
 
-The architecture strictly follows a unidirectional reactive model:
-
-```
-┌────────────────────────────────────────────────────────┐
-│                   System Subsystems                    │
-│    (NetworkManager, PipeWire, UPower, Hyprland, Clock) │
-└───────────────────────────┬────────────────────────────┘
-                            │
-                            ▼
-┌────────────────────────────────────────────────────────┐
-│                   services/ (Singletons)               │
-│   • Single Source of Truth for system state & actions  │
-│   • Registered in services/qmldir                      │
-│   • Formats data and exposes reactive properties       │
-└──────────────┬──────────────────────────┬──────────────┘
-               │                          │
-               ▼                          ▼
-┌─────────────────────────────┐ ┌─────────────────────────────┐
-│  plugins/bar/components/    │ │   plugins/bar/widget_gui/   │
-│  (Bar Widgets / Pills)      │ │   (Interactive Dropdowns)   │
-│  • Reads from services/     │ │  • PopupWindow components   │
-│  • Emits UI actions back    │ │  • Anchored to barWindow    │
-│    to the services          │ │  • Advanced GUI controls    │
-└──────────────┬──────────────┘ └──────────────┬──────────────┘
-               │                               │
-               └──────────────┬────────────────┘
+```text
+Hyprland / PipeWire / NetworkManager / BlueZ / UPower / awww
+                              │
                               ▼
-┌────────────────────────────────────────────────────────┐
-│                   plugins/bar/Bar.qml                  │
-│   • PanelWindow layer-shell anchored to screen top     │
-│   • Arranges left, center, and right RowLayout groups  │
-└────────────────────────────────────────────────────────┘
+                    services/*.qml singletons
+             reactive state + narrowly scoped actions
+                              │
+              ┌───────────────┴────────────────┐
+              ▼                                ▼
+ plugins/bar/components                 popup components
+ compact status widgets          bar dropdowns + IPC plugins
+              └───────────────┬────────────────┘
+                              ▼
+                    plugins/bar/Bar.qml
+              one PanelWindow for every screen
 ```
 
-### Key Principles
-1. **Services are Singletons**: All system data (Audio, Wi-Fi, Battery, Time) lives in `services/`. Widgets must **never** query external processes or hardware directly if a service exists.
-2. **Formatting in Services**: State formatting (e.g. converting battery percentage to Material Symbol icon, Wi-Fi speed into 3 tiers) belongs in the singleton service, not scattered across widgets.
-3. **Components Only Display and Trigger**: Components in `plugins/bar/components/` read singleton properties and invoke service functions (e.g., `Audio.setVolume()`, `Wifi.toggleWifi()`).
-4. **Layout with RowLayouts**: Widgets are placed inside `RowLayout`s within `Bar.qml`. Widgets declare their own `implicitWidth` and `implicitHeight` (standard height: `33px`), allowing them to automatically push adjacent widgets without overlapping.
+`shell.qml` is intentionally small and instantiates `Bar`. `Bar.qml` owns per-screen panel windows and process-wide IPC routing. Service singletons are registered in `services/qmldir`; shared singletons are registered in `shared/qmldir`.
 
----
+## Repository map
 
-## 2. Directory Structure
-
-```
+```text
 .
-├── shell.qml                         # Quickshell entrypoint (loads plugins/bar and shared)
-├── README.md                         # This architecture guide
-│
-├── services/                         # System service singletons (Source of Truth)
-│   ├── qmldir                        # Registers Time, Power, Audio, Wifi, Bluetooth, Notifications singletons
-│   ├── README.md                     # Services subsystem documentation
-│   ├── Audio.qml                     # PipeWire volume, mute tracking & output device switcher
-│   ├── Bluetooth.qml                 # BlueZ Bluetooth controller state, device tracking & pairing
-│   ├── Notifications.qml             # Desktop notification daemon (NotificationServer), tracking & DND
-│   ├── Power.qml                     # UPower battery percentage, charging state & icon
-│   ├── Time.qml                      # SystemClock date & time formatting
-│   ├── Wifi.qml                      # NetworkManager Wi-Fi status, bitrate & management
-│   └── scripts/                      # Backend automation scripts
-│       ├── audio_ctl.py              # Fast JSON wrapper for pactl sink query & default sink switching
-│       ├── bluetooth_ctl.py          # Fast JSON wrapper for bluetoothctl operations
-│       └── wifi_scan.py              # Fast JSON scanner for known & in-range networks
-│
-├── plugins/
-│   └── bar/                          # Top bar plugin
-│       ├── README.md                 # Bar components & dropdown documentation
-│       ├── Bar.qml                   # Main PanelWindow layer-shell layout
-│       ├── workspaceIcons.jsonc      # Nerd Font icon dictionary for Hyprland apps
-│       ├── components/               # Bar pill widgets (height: 33px)
-│       │   ├── Pill.qml              # Base pill container with icon & label
-│       │   ├── BluetoothWidget.qml   # Circular pill with Bluetooth status & dropdown toggle
-│       │   ├── ClockWidget.qml       # Clock pill displaying Time.time
-│       │   ├── NotificationToasts.qml# Real-time toast notifications overlay with FIFO upward displacement
-│       │   ├── NotificationWidget.qml# Circular pill with notification count & DND indicator
-│       │   ├── PowerWidget.qml       # Battery pill displaying Power.battery
-│       │   ├── VolumeWidget.qml      # Circular pill with 360° symmetric progress ring & dropdown toggle
-│       │   ├── WifiWidget.qml        # Circular pill with Wi-Fi signal & dropdown toggle
-│       │   └── Workspaces.qml        # Hyprland workspace switcher with Nerd Font icons
-│       └── widget_gui/               # Full GUI dropdown panels
-│           ├── BluetoothGui.qml      # Minimalist Bluetooth device management popup
-│           ├── NotificationGui.qml   # Minimalist notification center with DND & Clear All
-│           ├── VolumeGui.qml         # Minimalist volume slider & audio output switcher popup
-│           └── WifiGui.qml           # Minimalist Omarchy-style Wi-Fi management popup
-│
-└── shared/                           # Shared design tokens and utilities
-    ├── qmldir                        # Registers Theme singleton
-    ├── README.md                     # Theming & design system documentation
-    ├── Theme.qml                     # Global theme manager exposing colors
-    └── colors/
-        └── Catpuccin.qml             # Catppuccin Frappé palette definitions
+├── shell.qml                     Quickshell entrypoint
+├── launch.sh                     Restarts Quickshell as a daemon and syncs GTK icon theme
+├── shared/
+│   ├── Theme.qml                 Runtime Catppuccin/Everforest selector
+│   ├── BarColors.qml             Fixed monochrome bar and shell-chrome palette
+│   ├── colors/
+│   │   ├── Catpuccin.qml         Catppuccin palette (legacy spelling is intentional)
+│   │   └── Everforest.qml        Everforest palette
+│   └── qmldir                    Registers Theme and BarColors
+├── services/
+│   ├── Audio.qml                 PipeWire volume, mute, and output sinks
+│   ├── Bluetooth.qml             BlueZ status, scan, pair, connect, and remove
+│   ├── Notifications.qml         Freedesktop notification server and DND state
+│   ├── Power.qml                 UPower battery state
+│   ├── Time.qml                  Minute-resolution clock
+│   ├── Wallpaper.qml             Per-theme wallpaper history and awww application
+│   ├── Wifi.qml                  NetworkManager status, scanning, and actions
+│   ├── scripts/                  Python adapters for audio, Bluetooth, and Wi-Fi
+│   └── qmldir                    Registers every service singleton
+└── plugins/
+    ├── bar/
+    │   ├── Bar.qml               Multi-screen panel and IPC router
+    │   ├── components/           Compact 33 px bar widgets and toast overlay
+    │   ├── widget_gui/           Calendar, clock, and right-side dropdowns
+    │   └── workspaceIcons.jsonc  Preserved custom glyph map; currently disabled
+    ├── appLauncher/              Searchable five-row desktop-entry launcher
+    ├── lockScreen/               Secure multi-monitor session lock and PAM prompt
+    ├── logoutManager/            Suspend, logout, reboot, and poweroff UI
+    ├── themeSelector/            Runtime palette selector
+    └── wallpaperSwitcher/        Theme-specific wallpaper browser
 ```
 
----
+## Bar layout
 
-## 3. Design System & Theming
+`Bar.qml` creates one 45 px-tall `PanelWindow` per `Quickshell.screens` entry.
 
-The entire UI is unified under the Catppuccin Frappé palette via `shared/Theme.qml`.
+| Region | Contents | Notes |
+| --- | --- | --- |
+| Left | `Workspaces` | Workspaces 1–5 on the laptop/single monitor and 6–10 on an external monitor, expanding for active extra workspaces. |
+| Center | `ClockWidget` | The visual and animation origin for the calendar, clock GUI, and every IPC plugin. |
+| Right | Wi-Fi, Bluetooth, volume, battery | Ordered left-to-right. Wi-Fi/Bluetooth/volume expand leftward and push only widgets to their left. |
 
-### Color Tokens (`Theme.colors.<token>`)
-| Token | Hex | Usage |
-| :--- | :--- | :--- |
-| `bg0` | `#232634` | Main container and pill background |
-| `bg1` | `#303446` | Hovered pill background, active row highlights |
-| `bg2` | `#414559` | Borders, divider lines, switch track off-state |
-| `bg3` | `#51576d` | Input borders, elevated elements |
-| `bg4` | `#626880` | Muted labels, secondary descriptions, inactive icons |
-| `fg` | `#c6d0f5` | Primary text and default icons |
-| `text_accent` | `#81c8be` (Aqua) | Active network, volume fill, positive highlights |
-| `alt_accent` | `#8caaee` (Blue) | Secondary highlights, workspace indicators |
-| `container_accent`| `#ca9ee6` (Purple)| Container accents |
-| `red` | `#e78284` | Mute indicator, alert status, disconnect buttons |
+`NotificationWidget` exists but is currently commented out in the center layout. `NotificationToasts` remains active on every screen.
 
-### Typography & Icons
-- **System Typography**: `"SF Pro Display"` (sans-serif fallback).
-- **Iconography**: `"Material Symbols Rounded"` used for all system indicators (Volume, Power, Wi-Fi, Clock).
-- **Workspace App Glyphs**: Nerd Font glyphs loaded from `plugins/bar/workspaceIcons.jsonc`.
+## Popup families
 
----
+There are two deliberately different popup systems.
 
-## 4. Subsystem Integrations
+### Clock-anchored popups
 
-- **Hyprland**: Integrated via `Quickshell.Hyprland` in `Workspaces.qml` to track active workspace IDs and window classes for automatic icon rewriting.
-- **PipeWire**: Integrated via `Quickshell.Services.Pipewire` in `Audio.qml` with `PwObjectTracker` monitoring `Pipewire.defaultAudioSink`.
-- **UPower**: Integrated via `Quickshell.Services.UPower` in `Power.qml` tracking `UPower.displayDevice`.
-- **NetworkManager**: Dual-layer integration via native `Quickshell.Networking` plus fast `nmcli` / `iw` netlink queries in `Wifi.qml` and `services/scripts/wifi_scan.py`.
-- **BlueZ / Bluetooth**: Integrated via `bluetoothctl` in `Bluetooth.qml` and `services/scripts/bluetooth_ctl.py` to control power, discovery, connection, pairing, and battery status.
+`Calendar`, `ClockGui`, `ThemeSwitcher`, `WallpaperSwitcher`, `AppLauncher`, and `LogoutManager` expand around the centered clock. `ClockWidget` allows only one of these to be active, animates the current popup closed before opening another, and hides its compact clock pill while the popup owns that visual origin.
 
----
+IPC plugins are routed by `Bar.qml` to the `ClockWidget` on `Hyprland.focusedMonitor`. A popup on another output is closed before the focused output opens its copy.
 
-## 5. Development, Running & Hot-Reload
+### Right-side dropdowns
 
-- **Running the Shell**:
-  ```bash
-  qs -p /home/aryan/.config/quickshell
-  ```
-- **Hot-Reload**: Quickshell monitors all `.qml`, `.jsonc`, and `.py` files in the directory tree and reloads instantly on file save.
-- **Log Location**:
-  Logs are written to `/run/user/1000/quickshell/by-id/<instance_id>/log.log` and `log.qslog`. Always check these logs if investigating syntax errors or binding loops.
+`WifiGui`, `BluetoothGui`, and `VolumeGui` inherit `LeftExpandingPopup`. Their top-right corner remains fixed at the compact widget while width grows to the left. `TrayDropdownWidget` exposes the animated width to the bar, which pushes preceding right-side widgets left without moving widgets to the popup's right. `DropdownController` serializes transitions so only one right-side dropdown is active.
+
+## IPC endpoints
+
+Each target provides `open`, `close`, and `toggle`:
+
+```bash
+qs ipc call themeSwitcher toggle
+qs ipc call wallpaperSwitcher toggle
+qs ipc call appLauncher toggle
+qs ipc call logoutManager toggle
+```
+
+The secure lock screen has intentionally one-way IPC: `lock`, `open`, and `toggle` all lock or re-focus it, and there is no `close` endpoint:
+
+```bash
+qs ipc call lockScreen lock
+```
+
+Under normal operation it can only be released by successful PAM authentication.
+
+Temporary development exception: `qs ipc call lockScreenEmergency unlock` force-releases the lock without PAM so authentication failures can be debugged without rebooting. This is a security bypass and must be removed, along with its locked Hyprland keybind, once authentication is reliable.
+
+The temporary in-surface recovery chord is `Ctrl+Alt+Shift+F12`; unlike the IPC binding, it is handled directly by the focused lock-screen input.
+
+Before using the lock screen, install its root-owned PAM policy:
+
+```bash
+bash ~/.config/quickshell/plugins/lockScreen/install-pam.sh
+```
+
+The lock component refuses to acquire the Wayland session lock if `/etc/pam.d/quickshell-lock` is absent.
+
+New `IpcHandler` declarations can require a full Quickshell restart before they appear in `qs ipc show`; ordinary QML visual changes normally hot-reload.
+
+## UI and animation contract
+
+### Motion
+
+Popup geometry must be driven by one scalar `expansionProgress`. Width and height are derived from that same value, which guarantees they start and finish together and produces the intended diagonal expansion instead of sequential horizontal/vertical motion.
+
+- Open: `260 ms`, `Easing.OutBack`, overshoot `0.8`.
+- Close: `170 ms`, `Easing.InOutCubic`.
+- Collapsed height: `33 px`, matching the clock or tray pill.
+- Content is laid out at its final size and revealed by clipping/opacity; do not animate nested layout dimensions independently.
+- Overshoot padding belongs to the transparent native popup surface so the card is not clipped.
+- The compact pill is hidden during handoff to prevent a translucent pre-image behind the expanding card.
+- Dynamic right-side popup height changes use a separate short resize only after the opening animation completes.
+
+### Focus and dismissal
+
+Interactive popups use `HyprlandFocusGrab` with `windows: [root]`. When activated, the popup calls `forceActiveFocus()` on its key-handling item. The bar itself is not included in the focus grab. Losing the grab closes the popup, and Escape always starts the close animation rather than instantly hiding the native window.
+
+Keyboard-oriented plugins use arrow keys for selection and Enter/Return for activation. Mouse hover updates the same highlighted index so mouse and keyboard state never diverge.
+
+### Colors
+
+The shell has two color domains:
+
+- `BarColors` is the stable monochrome palette for bar pills, hardware dropdowns, calendar/clock UI, app/logout plugins, common text, borders, hover fills, and disabled states.
+- `Theme.colors` is the switchable Catppuccin/Everforest palette for semantic accents, previews, selected calendar dates, warnings, and the intentionally theme-aware theme/wallpaper switcher surfaces.
+
+Do not replace neutral bar surfaces with `Theme.colors`; switching themes must not recolor the black-and-white shell chrome. Do not add one-off gray literals—add or reuse a semantic `BarColors` role. See [`shared/README.md`](shared/README.md).
+
+### Fonts and icons
+
+- Text: `SF Pro Display`.
+- UI glyphs: `Material Symbols Rounded`.
+- Application icons: `DesktopEntries` metadata resolved through `Quickshell.iconPath()`.
+- `launch.sh` reads the global GTK icon theme (`gsettings`, then GTK 3 settings as fallback), exports it as `QS_ICON_THEME`, and starts Quickshell with `qs -d`. This makes workspace and launcher icons follow the theme selected by `nwg-look` after a restart.
+
+The preserved `workspaceIcons.jsonc` Nerd Font mapping is currently commented out in `Workspaces.qml`; natural system icons are the active path.
+
+## Theme and wallpaper coupling
+
+`Theme.qml` exposes `availableThemes`, `currentTheme`, `colors`, `paletteFor()`, and `setTheme()`. The available IDs are `catpuccin` and `everforest`.
+
+When `ThemeSwitcher` selects a theme, it also calls `Wallpaper.applyForTheme()`. `Wallpaper.qml` remembers the last wallpaper independently for each theme in `Quickshell.statePath("wallpaper-history.json")`. Wallpapers live in:
+
+```text
+~/Pictures/Wallpapers/catpuccin
+~/Pictures/Wallpapers/everforest
+```
+
+Applying a wallpaper runs:
+
+```bash
+awww img <path> --transition-type wipe --transition-fps 60
+```
+
+## Service boundaries
+
+- Put long-lived system state and reusable actions in `services/`.
+- Register every new singleton in `services/qmldir`.
+- Widgets consume service properties and call service methods; they should not duplicate polling logic.
+- Plugin-local one-shot actions are acceptable when they are not reusable state, such as the logout manager's power commands.
+- Keep external parsing in `services/scripts/` when shell output is complex.
+
+## Running and validation
+
+Use the launcher so icon-theme synchronization and daemonization are applied:
+
+```bash
+./launch.sh
+```
+
+Useful diagnostics:
+
+```bash
+qs list
+qs ipc show
+qs log -p . --any-display -t 80 --no-color
+```
+
+Before handing off changes:
+
+1. Run `git diff --check`.
+2. Confirm the live log reaches `Configuration Loaded` without errors from changed files.
+3. For a new IPC target, restart using `launch.sh`, then verify it appears in `qs ipc show`.
+4. Exercise popup open and close through IPC, but never invoke suspend, logout, reboot, or poweroff as a test.
+5. Treat unrelated missing icon, portal, or transient PipeWire warnings separately from QML load failures.
+
+## Dependencies
+
+Core runtime dependencies include Quickshell built with Wayland session-lock and PAM support, Hyprland, Qt 6/QML (including `QtQuick.Effects`), Linux PAM, PipeWire/PulseAudio tools (`pactl`), NetworkManager (`nmcli`), `iw`, BlueZ (`bluetoothctl`), UPower, Python 3, and `awww`. The configured fonts and the selected system icon theme must also be installed.
