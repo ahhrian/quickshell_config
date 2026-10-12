@@ -5,6 +5,7 @@
 
 set -uo pipefail
 
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 theme=${1:-}
 wallpaper_path=${2:-}
 
@@ -58,6 +59,51 @@ if [[ -f "$hypr_theme" ]]; then
     fi
 else
     echo "apply-theme: Hyprland theme does not exist: $hypr_theme" >&2
+    result=1
+fi
+
+# Starship ------------------------------------------------------------------
+# Starship has no TOML include directive, so compose its theme-neutral layout
+# and the selected palette into the config it reads before every prompt.
+starship_source="$script_dir/starship"
+starship_base="$starship_source/base.toml"
+starship_theme="$starship_source/themes/$theme.toml"
+starship_dir="$user_home/.config/starship"
+starship_colors="$starship_dir/colors.toml"
+starship_config="$user_home/.config/starship.toml"
+
+if [[ -f "$starship_base" && -f "$starship_theme" ]]; then
+    if mkdir -p -- "$starship_dir" \
+            && ln -sf -- "$starship_theme" "$starship_colors"; then
+        temporary_config="$user_home/.config/.starship.toml.$$.tmp"
+        if { cat "$starship_base"; printf '\n'; cat "$starship_colors"; } \
+                > "$temporary_config" \
+                && mv -Tf "$temporary_config" "$starship_config"; then
+            # Starship is rendered by Bash's PROMPT_COMMAND rather than by a
+            # persistent daemon. Ask idle Bash windows to cancel their current
+            # input and draw a fresh prompt from the new configuration. Ctrl+C
+            # is deliberate: unlike Enter, it can never execute partial input.
+            # Independent Kitty processes append their PID when the configured
+            # listen_on address is already represented by a base name, yielding
+            # sockets such as /tmp/mykitty-8135. Refresh every live endpoint.
+            kitty_sockets=("/tmp/mykitty" /tmp/mykitty-*)
+            for kitty_socket in "${kitty_sockets[@]}"; do
+                [[ -S "$kitty_socket" ]] || continue
+                kitty @ --to "unix:$kitty_socket" send-text \
+                    --match 'cmdline:(^|/)bash$' '\x03' \
+                    >/dev/null 2>&1 || true
+            done
+        else
+            echo "apply-theme: could not rebuild Starship configuration" >&2
+            rm -f -- "$temporary_config"
+            result=1
+        fi
+    else
+        echo "apply-theme: could not update Starship colors link" >&2
+        result=1
+    fi
+else
+    echo "apply-theme: Starship base or theme palette is missing" >&2
     result=1
 fi
 
