@@ -175,6 +175,7 @@ Paths:
 ```text
 ~/Pictures/Wallpapers/catpuccin
 ~/Pictures/Wallpapers/everforest
+~/Pictures/Wallpapers/gruvbox
 Quickshell.statePath("wallpaper-history.json")
 ```
 

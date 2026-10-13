@@ -37,11 +37,12 @@ Hyprland / PipeWire / NetworkManager / BlueZ / UPower / awww
 ├── shell.qml                     Quickshell entrypoint
 ├── launch.sh                     Restarts Quickshell as a daemon and syncs GTK icon theme
 ├── shared/
-│   ├── Theme.qml                 Runtime Catppuccin/Everforest selector
+│   ├── Theme.qml                 Runtime Catppuccin/Everforest/Gruvbox selector
 │   ├── BarColors.qml             Fixed monochrome bar and shell-chrome palette
 │   ├── colors/
 │   │   ├── Catpuccin.qml         Catppuccin palette (legacy spelling is intentional)
-│   │   └── Everforest.qml        Everforest palette
+│   │   ├── Everforest.qml        Everforest palette
+│   │   └── Gruvbox.qml           Gruvbox palette
 │   └── qmldir                    Registers Theme and BarColors
 ├── services/
 │   ├── Audio.qml                 PipeWire volume, mute, and output sinks
@@ -150,7 +151,7 @@ Keyboard-oriented plugins use arrow keys for selection and Enter/Return for acti
 The shell has two color domains:
 
 - `BarColors` is the stable monochrome palette for bar pills, hardware dropdowns, calendar/clock UI, app/logout plugins, common text, borders, hover fills, and disabled states.
-- `Theme.colors` is the switchable Catppuccin/Everforest palette for semantic accents, previews, selected calendar dates, warnings, and the intentionally theme-aware theme/wallpaper switcher surfaces.
+- `Theme.colors` is the switchable Catppuccin/Everforest/Gruvbox palette for semantic accents, previews, selected calendar dates, warnings, and the intentionally theme-aware theme/wallpaper switcher surfaces.
 
 Do not replace neutral bar surfaces with `Theme.colors`; switching themes must not recolor the black-and-white shell chrome. Do not add one-off gray literals—add or reuse a semantic `BarColors` role. See [`shared/README.md`](shared/README.md).
 
@@ -165,7 +166,9 @@ The preserved `workspaceIcons.jsonc` Nerd Font mapping is currently commented ou
 
 ## Theme and wallpaper coupling
 
-`Theme.qml` exposes `availableThemes`, `currentTheme`, `colors`, `paletteFor()`, and `setTheme()`. The available IDs are `catpuccin` and `everforest`.
+`Theme.qml` exposes `availableThemes`, `currentTheme`, `colors`, `paletteFor()`, and `setTheme()`. The available IDs are `catpuccin`, `everforest`, and `gruvbox`.
+
+The selected Quickshell theme is stored in `Quickshell.statePath("theme-selection.json")` and restored after reloads and reboots. Restoration updates only the in-process palette and deliberately does not rerun system-wide theme commands.
 
 When `ThemeSwitcher` selects a theme, it passes the theme ID and its remembered wallpaper to `plugins/themeSelector/apply-theme.sh`. This script is the central integration point for settings outside Quickshell: it applies the wallpaper; updates and reloads Kitty; repoints Hyprland's color module; and rebuilds `~/.config/starship.toml` from `themeSelector/starship/base.toml` plus the selected semantic palette. `~/.config/starship/colors.toml` points at the active palette source. After rebuilding, the script sends `Ctrl+C` through every live Kitty remote-control socket (`/tmp/mykitty` or its PID-suffixed variants) only to Bash windows, so they draw the new Starship prompt immediately. This safely avoids executing partial input, but cancels any unsubmitted text. Add future application theme updates to separate labeled sections in this script.
 
@@ -174,6 +177,7 @@ When `ThemeSwitcher` selects a theme, it passes the theme ID and its remembered 
 ```text
 ~/Pictures/Wallpapers/catpuccin
 ~/Pictures/Wallpapers/everforest
+~/Pictures/Wallpapers/gruvbox
 ```
 
 Applying a wallpaper runs:

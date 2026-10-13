@@ -1,0 +1,10 @@
+[palettes.theme]
+foreground = "#ebdbb2"
+surface = "#504945"
+on_surface = "#ebdbb2"
+accent = "#fabd2f"
+default_accent = "#fabd2f"
+on_accent = "#282828"
+error = "#fb4934"
+warning = "#fabd2f"
+success = "#b8bb26"

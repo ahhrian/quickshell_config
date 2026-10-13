@@ -28,7 +28,7 @@ Use this decision rule before choosing a token:
 | Should this color visibly change when the selected theme changes? | `Theme.colors` |
 | Is this a semantic alert, active accent, theme preview, or highlighted date? | Usually `Theme.colors` |
 
-Do not use `Theme.colors.bg*` merely because a component needs a dark background. Neutral shell surfaces must remain visually consistent across Catppuccin and Everforest.
+Do not use `Theme.colors.bg*` merely because a component needs a dark background. Neutral shell surfaces must remain visually consistent across Catppuccin, Everforest, and Gruvbox.
 
 Current ownership by area:
 
@@ -67,17 +67,18 @@ Public API:
 | Member | Purpose |
 | --- | --- |
 | `availableThemes` | Array of `{name, id}` records used by `ThemeSwitcher`. |
-| `currentTheme` | Current ID; defaults to `catpuccin`. |
+| `currentTheme` | Current ID; restored from persistent state, initially `catpuccin`. |
 | `colors` | The active palette object. |
 | `paletteFor(id)` | Returns a palette for previews without changing the active theme. |
-| `setTheme(id)` | Selects Everforest or falls back to Catppuccin. |
+| `setTheme(id)` | Selects a registered theme or falls back to Catppuccin. |
 
 Available IDs are:
 
 - `catpuccin` — the spelling is retained throughout paths and state for compatibility.
 - `everforest`.
+- `gruvbox`.
 
-Theme choice is currently in-memory and returns to Catppuccin after a full Quickshell restart. Wallpaper history is persisted separately by `services/Wallpaper.qml`.
+Theme choice is stored in `Quickshell.statePath("theme-selection.json")` and restored whenever Quickshell starts or reloads. Restoring it changes only the in-process `Theme.colors` palette; external application configuration remains the responsibility of `apply-theme.sh` when the user actively selects a theme. Wallpaper history is persisted separately by `services/Wallpaper.qml`.
 
 ## Palette interface
 
@@ -98,6 +99,7 @@ Current accent aliases:
 | --- | --- | --- | --- |
 | Catppuccin Frappé | Purple | Aqua | Blue |
 | Everforest | Aqua | Yellow | Blue |
+| Gruvbox | Yellow | Green | Blue |
 
 Use named semantic aliases in ordinary components. Direct named swatches are appropriate for warnings (`red`, `yellow`) and for the theme selector's palette previews.
 

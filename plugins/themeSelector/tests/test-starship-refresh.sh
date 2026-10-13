@@ -11,6 +11,17 @@ script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 theme_selector_dir=$(cd -- "$script_dir/.." && pwd)
 apply_theme="$theme_selector_dir/apply-theme.sh"
 test_bashrc="$script_dir/refresh-test.bashrc"
+theme=${1:-catpuccin}
+
+case "$theme" in
+    catpuccin) expected_default_accent="#ca9ee6" ;;
+    everforest) expected_default_accent="#83c092" ;;
+    gruvbox) expected_default_accent="#fabd2f" ;;
+    *)
+        echo "FAIL: unsupported test theme: $theme" >&2
+        exit 2
+        ;;
+esac
 
 test_dir=$(mktemp -d /tmp/qs-starship-refresh-test.XXXXXX)
 test_home="$test_dir/home"
@@ -34,15 +45,15 @@ trap cleanup EXIT
 mkdir -p -- \
     "$test_home/.config/kitty/themes" \
     "$test_home/.config/hypr/themes" \
-    "$test_home/Pictures/Wallpapers/catpuccin" \
+    "$test_home/Pictures/Wallpapers/$theme" \
     "$test_bin"
 
 printf 'foreground #ffffff\n' \
-    > "$test_home/.config/kitty/themes/catpuccin.conf"
+    > "$test_home/.config/kitty/themes/$theme.conf"
 printf 'return { accent = "0xffca9ee6" }\n' \
-    > "$test_home/.config/hypr/themes/catpuccin.lua"
+    > "$test_home/.config/hypr/themes/$theme.lua"
 printf 'test wallpaper\n' \
-    > "$test_home/Pictures/Wallpapers/catpuccin/test.png"
+    > "$test_home/Pictures/Wallpapers/$theme/test.png"
 : > "$prompt_marker"
 
 # Keep the integration test self-contained: do not signal real Kitty
@@ -83,8 +94,8 @@ done
 HOME="$test_home" \
 PATH="$test_bin:$PATH" \
 QS_KITTY_SOCKET_BASE="$kitty_socket" \
-    bash "$apply_theme" catpuccin \
-        "$test_home/Pictures/Wallpapers/catpuccin/test.png"
+    bash "$apply_theme" "$theme" \
+        "$test_home/Pictures/Wallpapers/$theme/test.png"
 
 for attempt in {1..50}; do
     prompts_after=$(wc -l < "$prompt_marker")
@@ -93,16 +104,16 @@ for attempt in {1..50}; do
 done
 
 [[ $(readlink -f "$test_home/.config/kitty/colors") \
-    == "$test_home/.config/kitty/themes/catpuccin.conf" ]] || {
+    == "$test_home/.config/kitty/themes/$theme.conf" ]] || {
     echo "FAIL: Kitty theme link was not updated" >&2
     exit 1
 }
 [[ $(readlink -f "$test_home/.config/hypr/colors.lua") \
-    == "$test_home/.config/hypr/themes/catpuccin.lua" ]] || {
+    == "$test_home/.config/hypr/themes/$theme.lua" ]] || {
     echo "FAIL: Hyprland theme link was not updated" >&2
     exit 1
 }
-rg -q '^default_accent = "#ca9ee6"$' \
+rg -q "^default_accent = \"$expected_default_accent\"$" \
     "$test_home/.config/starship.toml" || {
     echo "FAIL: generated Starship palette is incorrect" >&2
     exit 1
@@ -112,4 +123,5 @@ rg -q '^default_accent = "#ca9ee6"$' \
     exit 1
 }
 
-printf 'PASS: theme links, Starship config, and live prompt refresh verified\n'
+printf 'PASS: %s links, Starship config, and live prompt refresh verified\n' \
+    "$theme"

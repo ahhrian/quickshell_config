@@ -23,7 +23,6 @@ Scope {
 
     readonly property int fadeInDuration: 260
     readonly property int fadeOutDuration: 200
-    readonly property bool locked: lockRequested || sessionLock.locked || sessionLock.secure
 
     readonly property string wallpaperPath: {
         const remembered = Wallpaper.wallpaperForTheme(Theme.currentTheme);
@@ -39,6 +38,22 @@ Scope {
         focusRequestSerial++;
     }
 
+    // Read the three authoritative values at the point of use. A derived QML
+    // property previously remained stuck at true after the native session-lock
+    // object unlocked, preventing every later lock request.
+    function isLockActive() {
+        return lockRequested || sessionLock.locked || sessionLock.secure;
+    }
+
+    function resetUnlockedState() {
+        fadeInAnimation.stop();
+        fadeOutAnimation.stop();
+        lockRequested = false;
+        unlockPending = false;
+        visualOpacity = 0;
+        resetAuthenticationState();
+    }
+
     function lock() {
         if (!pamConfigured) {
             console.error("Lock screen refused to lock: /etc/pam.d/quickshell-lock is missing");
@@ -47,7 +62,7 @@ Scope {
 
         // IPC is intentionally idempotent. A repeated request only restores
         // focus and can never release the compositor's session lock.
-        if (locked) {
+        if (isLockActive()) {
             requestFocus();
             return;
         }
@@ -112,7 +127,7 @@ Scope {
     }
 
     function finishUnlock() {
-        if (!locked || unlockPending)
+        if (!isLockActive() || unlockPending)
             return;
 
         // Keep the compositor lock held while its contents fade to the solid
@@ -126,14 +141,15 @@ Scope {
     }
 
     function releaseSessionLock() {
-        if (!locked)
+        if (!isLockActive() && !unlockPending)
             return;
 
+        // Clear the QML-owned request before releasing the compositor lock.
+        // onLockStateChanged performs a second idempotent reset once the native
+        // object confirms that it has unlocked.
         lockRequested = false;
         unlockPending = false;
         resetAuthenticationState();
-        // This is the release mechanism used by Omarchy's Quickshell lock.
-        // Assigning the property also keeps Quickshell's target state coherent.
         sessionLock.locked = false;
         visualOpacity = 0;
         console.info("Lock screen released after successful authentication");
@@ -148,7 +164,7 @@ Scope {
     }
 
     function emergencyUnlock() {
-        if (!locked)
+        if (!isLockActive())
             return;
 
         // TEMPORARY SECURITY BYPASS: remove this function and its IPC handler
@@ -156,11 +172,9 @@ Scope {
         console.warn("Emergency lock-screen unlock requested; bypassing PAM");
         fadeInAnimation.stop();
         fadeOutAnimation.stop();
-        unlockPending = false;
-        visualOpacity = 0;
         lockRequested = false;
-        resetAuthenticationState();
         sessionLock.locked = false;
+        resetUnlockedState();
     }
 
     IpcHandler {
@@ -171,7 +185,7 @@ Scope {
         function toggle(): void { root.lock(); }
         function status(): string {
             return JSON.stringify({
-                locked: root.locked,
+                locked: root.isLockActive(),
                 requested: root.lockRequested,
                 sessionLocked: sessionLock.locked,
                 secure: sessionLock.secure,
@@ -274,14 +288,9 @@ Scope {
 
         onLockStateChanged: {
             if (!locked) {
-                fadeInAnimation.stop();
-                fadeOutAnimation.stop();
-                root.visualOpacity = 0;
-                root.unlockPending = false;
-                if (root.lockRequested) {
-                    root.lockRequested = false;
-                    root.resetAuthenticationState();
-                }
+                // Always reset every QML-side lifecycle flag. Conditional
+                // cleanup left stale state behind after successful unlocks.
+                root.resetUnlockedState();
             } else {
                 root.requestFocus();
             }

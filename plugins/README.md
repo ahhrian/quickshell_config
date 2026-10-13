@@ -73,37 +73,39 @@ Adding the bar window to the focus-grab list can cause Hyprland to focus the bar
 
 ## `ThemeSwitcher.qml`
 
-Displays `Theme.availableThemes` horizontally. Each option contains its display name and five palette swatches. The selected theme and keyboard-highlighted theme receive theme-aware fills/borders.
+Displays `Theme.availableThemes` in a cyclic three-card carousel. The currently highlighted theme is centered, lifted slightly above its neighbours, and outlined with the active theme accent; each card contains its display name and five palette swatches. Opening the popup centers the active theme. A single animated carousel offset drives both the horizontal swipe and vertical lift so those movements remain synchronized. The popup uses the same 680-pixel target width as the wallpaper switcher.
 
 Controls:
 
-- Left/Right or Up/Down: move highlight with wraparound.
-- Enter/Return or click: call `Theme.setTheme(id)`, run `apply-theme.sh <id> <remembered-wallpaper>`, then close.
+- Left/Right or Up/Down: swipe one card with wraparound.
+- Click a side card: swipe it into the center.
+- Enter/Return or click the center card: call `Theme.setTheme(id)`, run `apply-theme.sh <id> <remembered-wallpaper>`, then close.
 - Escape: close.
 
-The active theme is currently not persisted across a full Quickshell restart; Catppuccin is the default. Wallpaper selections are persisted per theme. `apply-theme.sh` is the central place for side effects outside Quickshell: it restores the selected theme's wallpaper through `awww`; atomically repoints `~/.config/kitty/colors` and reloads running Kitty processes; repoints `~/.config/hypr/colors.lua` for theme-aware decoration accents; and repoints `~/.config/starship/colors.toml` before rebuilding `~/.config/starship.toml` from the theme-neutral Starship layout and selected semantic palette. It then discovers Kitty's configured `unix:/tmp/mykitty` endpoint and any per-process `/tmp/mykitty-*` sockets, sending `Ctrl+C` only to windows whose foreground process is Bash. This forces Starship to render the new prompt immediately without executing input. Any unsubmitted command text in an idle Bash prompt is cancelled as a consequence. Keep future application-specific theme updates in clearly labeled sections of that script.
+The active Quickshell theme is persisted in `Quickshell.statePath("theme-selection.json")` and restored after reloads or reboots without rerunning external theme commands. Wallpaper selections are persisted per theme. `apply-theme.sh` is the central place for side effects outside Quickshell: it restores the selected theme's wallpaper through `awww`; atomically repoints `~/.config/kitty/colors` and reloads running Kitty processes; repoints `~/.config/hypr/colors.lua` for theme-aware decoration accents; and repoints `~/.config/starship/colors.toml` before rebuilding `~/.config/starship.toml` from the theme-neutral Starship layout and selected semantic palette. It then discovers Kitty's configured `unix:/tmp/mykitty` endpoint and any per-process `/tmp/mykitty-*` sockets, sending `Ctrl+C` only to windows whose foreground process is Bash. This forces Starship to render the new prompt immediately without executing input. Any unsubmitted command text in an idle Bash prompt is cancelled as a consequence. Keep future application-specific theme updates in clearly labeled sections of that script.
 
-Starship does not support importing an independent TOML fragment. Its source files therefore live under `themeSelector/starship/`: `base.toml` owns prompt structure and references semantic names such as `accent`, `surface`, and `foreground`, while `themes/<theme>.toml` defines those names in `[palettes.theme]`. Each palette also defines `default_accent`, used specifically by the directory segment—purple for Catppuccin and aqua for Everforest—so future themes can choose their natural primary accent without changing the prompt layout. The generated `~/.config/starship.toml` is runtime output and should not be edited directly; change the base or palette source instead. The pre-migration configuration is retained at `~/.config/starship.toml.before-theme-switcher`.
+Starship does not support importing an independent TOML fragment. Its source files therefore live under `themeSelector/starship/`: `base.toml` owns prompt structure and references semantic names such as `accent`, `surface`, and `foreground`, while `themes/<theme>.toml` defines those names in `[palettes.theme]`. Each palette also defines `default_accent`, used specifically by the directory segment—purple for Catppuccin, aqua for Everforest, and yellow for Gruvbox—so future themes can choose their natural primary accent without changing the prompt layout. The generated `~/.config/starship.toml` is runtime output and should not be edited directly; change the base or palette source instead. The pre-migration configuration is retained at `~/.config/starship.toml.before-theme-switcher`.
 
 ## `WallpaperSwitcher.qml`
 
-Displays a three-column `GridView` of image previews from the selected theme's directory:
+Displays a cyclic three-card carousel of image previews from the selected theme's directory:
 
 ```text
 ~/Pictures/Wallpapers/catpuccin
 ~/Pictures/Wallpapers/everforest
+~/Pictures/Wallpapers/gruvbox
 ```
 
 Supported file types: JPG, JPEG, PNG, WebP, and BMP. Files are sorted by name.
 
 Controls:
 
-- Left/Right: move one cell.
-- Up/Down: move one row (three cells).
-- Enter/Return or click: call `Wallpaper.selectWallpaper()` and close.
+- Left/Right or Up/Down: swipe one card with wraparound.
+- Click a side card: swipe it into the center.
+- Enter/Return or click the center card: call `Wallpaper.selectWallpaper()` and close.
 - Escape: close.
 
-When opened, it highlights the wallpaper remembered for the current theme, falling back to the first entry. Applying uses `awww` with the configured wipe transition through the wallpaper service.
+When opened, it centers the wallpaper remembered for the current theme, falling back to the first entry. The center card is lifted and accent-bordered; horizontal movement and vertical emphasis share one animation progress value. Applying uses `awww` with the configured wipe transition through the wallpaper service.
 
 ## `AppLauncher.qml`
 
@@ -145,6 +147,8 @@ Never test this component by selecting an action unless the user explicitly inte
 `LockScreen` uses `WlSessionLock`, not a fullscreen application window. The compositor creates one protected `WlSessionLockSurface` per monitor and does not reveal client windows if Quickshell exits unexpectedly. Every surface renders the active theme's remembered wallpaper from `Wallpaper.qml`, applies a Qt `MultiEffect` blur, and adds a black dim layer. If no image is available, the opaque `BarColors.deepBackground` surface remains in place.
 
 Launch and unlock use one shared opacity animation across every output. The session-lock surfaces remain fully opaque in `BarColors.deepBackground`: after the compositor reports that the session is secure, their wallpaper and controls fade in over 260 ms. Successful authentication fades that content back to black over 200 ms, then releases the Wayland session lock. This ordering deliberately avoids a translucent transition that could reveal open client windows.
+
+Lock activity is evaluated directly from the current request, native lock, and compositor-secure values rather than cached in a derived QML property. When the native lock reports that it has released, every request, animation, authentication, and pending-unlock flag is reset unconditionally. This clean unlocked state is required before the same `WlSessionLock` can be acquired again, including through the logout manager's lock-before-suspend flow.
 
 The large clock and weekday/date are backed by the minute-resolution `Time` service. Password state is shared across outputs, and each lock surface forces focus to its password `TextInput`. Enter submits through `PamContext` using the root-owned `/etc/pam.d/quickshell-lock` policy; Escape clears the field but never closes the lock. Failed attempts clear the secret and return focus. The submitted password is retained only for the active PAM conversation and is cleared on completion.
 

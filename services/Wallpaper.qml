@@ -19,7 +19,9 @@ Singleton {
     property string pendingTheme: ""
 
     function normaliseTheme(themeName) {
-        return themeName === "everforest" ? "everforest" : "catpuccin";
+        if (themeName === "everforest" || themeName === "gruvbox")
+            return themeName;
+        return "catpuccin";
     }
 
     function pathFromUrl(url) {
@@ -32,7 +34,12 @@ Singleton {
     }
 
     function modelForTheme(themeName) {
-        return normaliseTheme(themeName) === "everforest" ? everforestWallpapers : catpuccinWallpapers;
+        const theme = normaliseTheme(themeName);
+        if (theme === "everforest")
+            return everforestWallpapers;
+        if (theme === "gruvbox")
+            return gruvboxWallpapers;
+        return catpuccinWallpapers;
     }
 
     function firstWallpaperForTheme(themeName) {
@@ -152,6 +159,21 @@ Singleton {
         onCountChanged: {
             if (root.pendingTheme === "everforest" && count > 0)
                 root.applyForTheme("everforest");
+        }
+    }
+
+    FolderListModel {
+        id: gruvboxWallpapers
+        folder: "file://" + root.wallpaperRoot + "/gruvbox"
+        nameFilters: root.imageFilters
+        showDirs: false
+        showDotAndDotDot: false
+        showHidden: false
+        sortField: FolderListModel.Name
+
+        onCountChanged: {
+            if (root.pendingTheme === "gruvbox" && count > 0)
+                root.applyForTheme("gruvbox");
         }
     }
 
