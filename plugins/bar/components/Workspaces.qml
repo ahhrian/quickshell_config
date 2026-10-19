@@ -83,107 +83,40 @@ Pill {
         }
     }
 
-    // Dynamically computed list of workspace IDs for this screen
+    // Workspaces 1..5 belong to the default display. An external display is
+    // the default whenever one is connected; otherwise the laptop display is.
+    // The laptop additionally owns workspaces 6..10.
     readonly property var workspaceIds: {
-        const _trigger = refreshCounter;
-        const screensCount = Quickshell.screens?.length ?? 1;
-        const focusedWs = Hyprland.focusedWorkspace?.id;
-        const focusedMon = Hyprland.focusedMonitor?.name;
-        const wss = Hyprland.workspaces?.values ?? [];
-        const tops = Hyprland.toplevels?.values ?? [];
-
-        return computeWorkspaceIds(screen, screensCount);
+        const screens = Quickshell.screens ?? [];
+        return computeWorkspaceIds(screen, hasExternalMonitor(screens));
     }
 
-    function computeWorkspaceIds(screenObj, numScreens) {
-        const currentScreenName = screenObj?.name ?? "";
-        const isBuiltin = currentScreenName.startsWith("eDP");
-        const isExternal = (numScreens > 1) && !isBuiltin;
+    function isBuiltinScreen(screenObj) {
+        return (screenObj?.name ?? "").startsWith("eDP");
+    }
 
-        // Base range:
-        // External monitor (when >1 screen): Workspaces 6..10
-        // Laptop / single monitor: Workspaces 1..5
-        const baseStart = isExternal ? 6 : 1;
-        const baseCount = 5;
-        const baseEnd = baseStart + baseCount - 1;
-
-        const wsSet = new Set();
-        for (let i = 0; i < baseCount; i++) {
-            wsSet.add(baseStart + i);
+    function hasExternalMonitor(screens) {
+        for (let i = 0; i < screens.length; i++) {
+            if (!isBuiltinScreen(screens[i]))
+                return true;
         }
+        return false;
+    }
 
-        const activeIds = [];
+    function workspaceRange(first, last) {
+        const ids = [];
+        for (let id = first; id <= last; id++)
+            ids.push(id);
+        return ids;
+    }
 
-        // Check active workspaces registered in Hyprland
-        const wss = Hyprland.workspaces?.values ?? [];
-        for (const w of wss) {
-            if (!w || !w.id || w.id <= 0) continue;
+    function computeWorkspaceIds(screenObj, externalConnected) {
+        if (!externalConnected)
+            return workspaceRange(1, 10);
 
-            let belongsToThis = false;
-            if (numScreens <= 1) {
-                belongsToThis = true;
-            } else if (w.monitor && w.monitor.name) {
-                belongsToThis = (w.monitor.name === currentScreenName);
-            } else {
-                belongsToThis = isExternal ? (w.id >= 6) : (w.id <= 5);
-            }
-
-            if (belongsToThis) {
-                activeIds.push(w.id);
-            }
-        }
-
-        // Check active toplevel windows
-        const toplevels = Hyprland.toplevels?.values ?? [];
-        for (const top of toplevels) {
-            const wid = top.workspace?.id;
-            if (!wid || wid <= 0) continue;
-
-            let belongsToThis = false;
-            if (numScreens <= 1) {
-                belongsToThis = true;
-            } else {
-                const winMonName = top.monitor?.name || top.workspace?.monitor?.name;
-                if (winMonName) {
-                    belongsToThis = (winMonName === currentScreenName);
-                } else {
-                    belongsToThis = isExternal ? (wid >= 6) : (wid <= 5);
-                }
-            }
-
-            if (belongsToThis) {
-                activeIds.push(wid);
-            }
-        }
-
-        // Check currently focused workspace
-        const focusedWs = Hyprland.focusedWorkspace?.id;
-        if (focusedWs && focusedWs > 0) {
-            const focusedMon = Hyprland.focusedMonitor?.name;
-            if (numScreens <= 1 || focusedMon === currentScreenName) {
-                activeIds.push(focusedWs);
-            }
-        }
-
-        // Add active workspaces beyond baseEnd
-        let maxActive = baseEnd;
-        for (const id of activeIds) {
-            if (id > maxActive) {
-                maxActive = id;
-            }
-            wsSet.add(id);
-        }
-
-        // If maxActive is within contiguous range (up to baseEnd + 10), fill in-between
-        if (maxActive > baseEnd && maxActive <= baseEnd + 10) {
-            for (let i = baseEnd + 1; i <= maxActive; i++) {
-                wsSet.add(i);
-            }
-        }
-
-        const arr = Array.from(wsSet);
-        arr.sort((a, b) => a - b);
-        return arr;
+        return isBuiltinScreen(screenObj)
+            ? workspaceRange(6, 10)
+            : workspaceRange(1, 5);
     }
 
     /*
