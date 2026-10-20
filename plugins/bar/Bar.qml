@@ -160,8 +160,15 @@ Scope {
                     anchors.right: parent.right
                     anchors.rightMargin: 14
                     anchors.verticalCenter: parent.verticalCenter
-                    implicitWidth: wifiWidget.width + bluetoothWidget.width + volumeWidget.width + powerWidget.width + 15
+                    implicitWidth: mediaWidget.width + wifiWidget.width + bluetoothWidget.width + volumeWidget.width + powerWidget.width + 20
                     implicitHeight: 33
+
+                    MediaWidget {
+                        id: mediaWidget
+                        anchors.right: wifiWidget.left
+                        anchors.rightMargin: 5
+                        barWindow: barWindow
+                    }
 
                     WifiWidget {
                         id: wifiWidget
