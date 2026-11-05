@@ -201,10 +201,6 @@ Scope {
                 }
             }
 
-            NotificationToasts {
-                screenModel: modelData
-                topOffset: barWindow.implicitHeight + 8
-            }
         }
     }
 }

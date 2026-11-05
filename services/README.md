@@ -22,7 +22,7 @@ Singleton {
 Current registrations:
 
 ```text
-Time, Power, Audio, Wifi, Bluetooth, Notifications, Wallpaper
+Time, Power, Audio, Brightness, Wifi, Bluetooth, Notifications, Wallpaper
 ```
 
 Consumers import the directory and access a service directly:
@@ -41,6 +41,7 @@ MouseArea { onClicked: Audio.toggleMute() }
 | `Time` | `SystemClock` | Clock pill, popup handoff states, and lock-screen clock/date. |
 | `Power` | UPower | Battery pill. |
 | `Audio` | PipeWire plus `audio_ctl.py`/`pactl` | Volume widget and volume GUI. |
+| `Brightness` | `brightnessctl` plus `/sys/class/backlight` | Lower-center hardware-level OSD. |
 | `Wifi` | Quickshell Networking, `nmcli`, `iw`, `wifi_scan.py` | Wi-Fi widget and Wi-Fi GUI. |
 | `Bluetooth` | `bluetooth_ctl.py`/`bluetoothctl` | Bluetooth widget and Bluetooth GUI. |
 | `Notifications` | Freedesktop `NotificationServer` | Toast overlay and optional notification center. |
@@ -86,10 +87,23 @@ Methods:
 
 - `setVolume(value)` clamps and writes native PipeWire volume.
 - `toggleMute()` toggles native mute.
+- `setVolumeGuiActive(owner, active)` tracks open volume popups across screens.
+- `volumeOsdSuppressed()` reports whether a change originated in shell UI or a volume popup is active.
 - `setDefaultSink(name)` invokes the helper and refreshes state.
 - `recheck()` refreshes sink metadata.
 
 Sink metadata refreshes on PipeWire node changes, Bluetooth connection changes, and a 3-second timer.
+
+## `Brightness.qml`
+
+Discovers the active backlight device from `brightnessctl -m`, then reads its native sysfs brightness value. `FileView` handles driver change notifications and a 500 ms fallback refresh covers drivers that do not notify file watchers.
+
+Reactive properties and signals:
+
+- `deviceName`, `brightnessPath`: selected backlight device and sysfs value file.
+- `rawBrightness`, `maximumBrightness`: native device values.
+- `level`, `percent`, `icon`: normalized display state.
+- `brightnessAdjusted(level)`: emitted only after initialization when the hardware value changes.
 
 ## `Wifi.qml`
 
@@ -164,7 +178,7 @@ Methods:
 - `getById(id)`.
 - `getTimeAgo(id)`; a 15-second pulse keeps relative timestamps current.
 
-`NotificationToasts.qml` listens for `toastRequested`. `NotificationGui.qml` provides history and dismissal UI, but its compact bar widget is currently disabled in `Bar.qml`.
+`plugins/popupUIs/NotificationToasts.qml` listens for `toastRequested`. `NotificationGui.qml` provides history and dismissal UI, but its compact bar widget is currently disabled in `Bar.qml`.
 
 ## `Wallpaper.qml`
 

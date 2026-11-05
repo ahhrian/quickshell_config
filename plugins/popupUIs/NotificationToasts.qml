@@ -4,8 +4,8 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Widgets
 
-import "../../../services"
-import "../../../shared"
+import "../../services"
+import "../../shared"
 
 PanelWindow {
     id: toastWindow

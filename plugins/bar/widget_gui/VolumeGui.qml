@@ -9,6 +9,15 @@ import "../../../shared"
 LeftExpandingPopup {
     id: root
 
+    Connections {
+        target: root
+        function onVisibleChanged() {
+            Audio.setVolumeGuiActive(root, root.visible);
+        }
+    }
+
+    Component.onDestruction: Audio.setVolumeGuiActive(root, false)
+
     targetWidth: 350
     maximumHeight: 520
     targetHeight: Math.min(card.implicitHeight, maximumHeight)

@@ -11,7 +11,7 @@ Singleton {
     id: root
 
     readonly property PwNode sink: Pipewire.defaultAudioSink
-    readonly property PwNodeAudio audio: sink?.audio
+    readonly property PwNodeAudio audio: sink ? sink.audio : null
 
     PwObjectTracker {
         objects: root.sink ? [root.sink] : []
@@ -22,6 +22,12 @@ Singleton {
     readonly property bool muted: audio ? audio.muted : false
 
     readonly property string icon: getIcon()
+
+    // Track every open volume popup rather than a single boolean because the
+    // bar creates one VolumeGui instance per screen.
+    property var volumeGuiOwners: []
+    property double uiVolumeChangeDeadline: 0
+    readonly property bool volumeGuiActive: volumeGuiOwners.length > 0
 
     // Output Sinks
     property var sinks: []
@@ -69,14 +75,39 @@ Singleton {
 
     function setVolume(newVolume) {
         if (audio) {
+            markUiVolumeChange();
             audio.volume = Math.max(0.0, Math.min(1.0, newVolume));
         }
     }
 
     function toggleMute() {
         if (audio) {
+            markUiVolumeChange();
             audio.muted = !audio.muted;
         }
+    }
+
+    function setVolumeGuiActive(owner, active) {
+        const owners = volumeGuiOwners.slice();
+        const index = owners.indexOf(owner);
+
+        if (active && index === -1)
+            owners.push(owner);
+        else if (!active && index !== -1)
+            owners.splice(index, 1);
+        else
+            return;
+
+        volumeGuiOwners = owners;
+    }
+
+    function markUiVolumeChange() {
+        // PipeWire may publish the result shortly after the QML assignment.
+        uiVolumeChangeDeadline = Date.now() + 1000;
+    }
+
+    function volumeOsdSuppressed() {
+        return volumeGuiActive || Date.now() < uiVolumeChangeDeadline;
     }
 
     function recheck() {

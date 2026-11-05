@@ -4,6 +4,10 @@ import Quickshell
 
 // Relative imports work
 import "plugins/bar"
+import "plugins/popupUIs"
 import "shared"
 
-Bar {}
+ShellRoot {
+    Bar {}
+    PopupUIs {}
+}

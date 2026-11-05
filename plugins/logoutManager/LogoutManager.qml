@@ -47,7 +47,7 @@ PopupWindow {
             id: "logout",
             label: "Logout",
             icon: "logout",
-            command: ["hyprctl", "dispatch", "exit"]
+            command: ["hyprctl", "dispatch", "hl.dsp.exit()"]
         },
         {
             id: "restart",

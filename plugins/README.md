@@ -1,6 +1,6 @@
 # Standalone Plugins
 
-This directory contains the top bar, four keybind-driven popup plugins, and a secure session-lock plugin. The popup plugins are instantiated inside every `ClockWidget`, but process-wide IPC routing in `bar/Bar.qml` opens only the copy on the currently focused monitor. The lock screen is instantiated once at bar scope and creates a protected surface for every output.
+This directory contains the top bar, transient system overlays, four keybind-driven popup plugins, and a secure session-lock plugin. The keybind-driven plugins are instantiated inside every `ClockWidget`, but process-wide IPC routing in `bar/Bar.qml` opens only the copy on the currently focused monitor. `popupUIs/` is instantiated directly by `shell.qml`. The lock screen is instantiated once at bar scope and creates a protected surface for every output.
 
 | Folder | Component | IPC target | Purpose |
 | --- | --- | --- | --- |
@@ -8,6 +8,7 @@ This directory contains the top bar, four keybind-driven popup plugins, and a se
 | `wallpaperSwitcher/` | `WallpaperSwitcher.qml` | `wallpaperSwitcher` | Browse and apply wallpapers for the active theme. |
 | `appLauncher/` | `AppLauncher.qml` | `appLauncher` | Search and launch desktop applications. |
 | `logoutManager/` | `LogoutManager.qml` | `logoutManager` | Suspend, leave Hyprland, reboot, or power off. |
+| `popupUIs/` | `PopupUIs.qml` | — | Notification toasts and lower-center volume/brightness OSDs. |
 | `lockScreen/` | `LockScreen.qml` | `lockScreen` | Cover every output and unlock only after PAM authentication. |
 
 All targets expose the same functions:

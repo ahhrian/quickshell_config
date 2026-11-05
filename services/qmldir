@@ -1,6 +1,7 @@
 singleton Time 1.0 Time.qml
 singleton Power 1.0 Power.qml
 singleton Audio 1.0 Audio.qml
+singleton Brightness 1.0 Brightness.qml
 singleton Wifi 1.0 Wifi.qml
 singleton Bluetooth 1.0 Bluetooth.qml
 singleton Notifications 1.0 Notifications.qml

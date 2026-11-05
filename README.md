@@ -28,7 +28,7 @@ Hyprland / PipeWire / NetworkManager / BlueZ / UPower / awww
               one PanelWindow for every screen
 ```
 
-`shell.qml` is intentionally small and instantiates `Bar`. `Bar.qml` owns per-screen panel windows and process-wide IPC routing. Service singletons are registered in `services/qmldir`; shared singletons are registered in `shared/qmldir`.
+`shell.qml` is intentionally small and instantiates `Bar` plus `PopupUIs`. `Bar.qml` owns per-screen panel windows and process-wide IPC routing; `PopupUIs.qml` owns per-screen notification and hardware-level overlays. Service singletons are registered in `services/qmldir`; shared singletons are registered in `shared/qmldir`.
 
 ## Repository map
 
@@ -46,6 +46,7 @@ Hyprland / PipeWire / NetworkManager / BlueZ / UPower / awww
 │   └── qmldir                    Registers Theme and BarColors
 ├── services/
 │   ├── Audio.qml                 PipeWire volume, mute, and output sinks
+│   ├── Brightness.qml            Backlight discovery and reactive brightness state
 │   ├── Bluetooth.qml             BlueZ status, scan, pair, connect, and remove
 │   ├── Notifications.qml         Freedesktop notification server and DND state
 │   ├── Power.qml                 UPower battery state
@@ -57,12 +58,13 @@ Hyprland / PipeWire / NetworkManager / BlueZ / UPower / awww
 └── plugins/
     ├── bar/
     │   ├── Bar.qml               Multi-screen panel and IPC router
-    │   ├── components/           Compact 33 px bar widgets and toast overlay
+    │   ├── components/           Compact 33 px bar widgets
     │   ├── widget_gui/           Calendar, clock, and right-side dropdowns
     │   └── workspaceIcons.jsonc  Preserved custom glyph map; currently disabled
     ├── appLauncher/              Searchable five-row desktop-entry launcher
     ├── lockScreen/               Secure multi-monitor session lock and PAM prompt
     ├── logoutManager/            Suspend, logout, reboot, and poweroff UI
+    ├── popupUIs/                 Notification toasts and volume/brightness OSD
     ├── themeSelector/            Runtime palette selector
     └── wallpaperSwitcher/        Theme-specific wallpaper browser
 ```
@@ -77,7 +79,7 @@ Hyprland / PipeWire / NetworkManager / BlueZ / UPower / awww
 | Center | `ClockWidget` | The visual and animation origin for the calendar, clock GUI, and every IPC plugin. |
 | Right | Wi-Fi, Bluetooth, volume, battery | Ordered left-to-right. Wi-Fi/Bluetooth/volume expand leftward and push only widgets to their left. |
 
-`NotificationWidget` exists but is currently commented out in the center layout. `NotificationToasts` remains active on every screen.
+`NotificationWidget` exists but is currently commented out in the center layout. `plugins/popupUIs/PopupUIs.qml` keeps `NotificationToasts` active on every screen and routes the volume/brightness OSD to the focused monitor.
 
 ## Popup families
 
@@ -92,6 +94,10 @@ IPC plugins are routed by `Bar.qml` to the `ClockWidget` on `Hyprland.focusedMon
 ### Right-side dropdowns
 
 `WifiGui`, `BluetoothGui`, and `VolumeGui` inherit `LeftExpandingPopup`. Their top-right corner remains fixed at the compact widget while width grows to the left. `TrayDropdownWidget` exposes the animated width to the bar, which pushes preceding right-side widgets left without moving widgets to the popup's right. `DropdownController` serializes transitions so only one right-side dropdown is active.
+
+### Transient system overlays
+
+`PopupUIs` owns notification toasts and the lower-center hardware-level OSD independently of the bar. Notification toasts preserve their upper-right placement. PipeWire volume/mute and backlight changes update one animated level card on the focused monitor; shell-originated volume changes are suppressed.
 
 ## IPC endpoints
 

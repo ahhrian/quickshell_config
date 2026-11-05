@@ -1,6 +1,6 @@
 # Bar Plugin
 
-`plugins/bar/` owns the multi-monitor top panel, compact widgets, workspace UI, notification toasts, and dropdowns directly attached to bar widgets.
+`plugins/bar/` owns the multi-monitor top panel, compact widgets, workspace UI, and dropdowns directly attached to bar widgets. Transient notification and hardware overlays live in `plugins/popupUIs/`.
 
 Standalone IPC plugins live beside this folder and are documented in [`plugins/README.md`](../README.md).
 
@@ -11,7 +11,7 @@ Standalone IPC plugins live beside this folder and are documented in [`plugins/R
 - a registry of every per-screen `ClockWidget`;
 - focused-monitor routing for clock-anchored IPC plugins;
 - four `IpcHandler` targets;
-- a `Variants` tree that creates one bar and one toast overlay per screen.
+- a `Variants` tree that creates one bar per screen.
 
 ### Focused-monitor routing
 
@@ -27,11 +27,11 @@ Each `PanelWindow` is anchored to the top, left, and right edges and has `implic
 | --- | --- | --- |
 | `left_layout` | Left, 14 px margin | `Workspaces` |
 | `middle_layout` | Center | `ClockWidget` |
-| `right_layout` | Right, 14 px margin | `WifiWidget`, `BluetoothWidget`, `VolumeWidget`, `PowerWidget` |
+| `right_layout` | Right, 14 px margin | `MediaWidget`, `WifiWidget`, `BluetoothWidget`, `VolumeWidget`, `PowerWidget` |
 
 The right-side order is important. Widgets are anchored from right to left: battery stays fixed at the edge, volume is left of battery, Bluetooth is left of volume, and Wi-Fi is left of Bluetooth.
 
-`NotificationWidget` exists but is commented out in `middle_layout`. `NotificationToasts` is active independently and appears below the bar on every screen.
+`NotificationWidget` exists but is commented out in `middle_layout`. `NotificationToasts` is mounted independently by `plugins/popupUIs/PopupUIs.qml` and keeps its existing upper-right placement.
 
 ## Compact component primitives
 
@@ -178,10 +178,6 @@ A 280×282 month calendar with previous/next controls, current-day accent, out-o
 Both popups anchor around the clock center and blend back to `collapsedColor` while shrinking so the handoff to the clock pill is visually continuous.
 
 ## Notifications
-
-### `NotificationToasts.qml`
-
-A non-exclusive overlay panel below the bar. It listens to `Notifications.toastRequested`, maintains up to five toast records, and displays app icon, summary/body, close control, and actions. Toasts auto-dismiss after two seconds; hovering pauses the timer and progress animation. DND suppresses new toast requests.
 
 ### `NotificationGui.qml`
 
