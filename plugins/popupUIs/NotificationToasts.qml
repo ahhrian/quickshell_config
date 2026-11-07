@@ -12,6 +12,7 @@ PanelWindow {
 
     property var screenModel: null
     property int topOffset: 48
+    property int toastDuration: 5000 // milliseconds
 
     screen: screenModel
 
@@ -103,10 +104,10 @@ PanelWindow {
                 }
             }
 
-            // 2-second auto-dismiss timer (pauses if mouse is hovering)
+            // Auto-dismiss timer (pauses if mouse is hovering)
             Timer {
                 id: dismissTimer
-                interval: 2000
+                interval: toastWindow.toastDuration
                 running: !cardHover.containsMouse
                 onTriggered: toastCard.dismissThis()
             }
@@ -244,7 +245,7 @@ PanelWindow {
                 }
             }
 
-            // Subtle 2-second countdown progress bar
+            // Subtle countdown progress bar
             Rectangle {
                 anchors.bottom: parent.bottom
                 anchors.left: parent.left
@@ -256,7 +257,7 @@ PanelWindow {
                 NumberAnimation on width {
                     from: toastCard.width
                     to: 0
-                    duration: 2000
+                    duration: toastWindow.toastDuration
                     running: true
                     paused: cardHover.containsMouse
                 }

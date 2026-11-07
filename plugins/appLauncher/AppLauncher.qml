@@ -40,6 +40,7 @@ PopupWindow {
     readonly property var filteredApplications: {
         const needle = query.trim().toLocaleLowerCase();
         const applications = DesktopEntries.applications.values;
+        const recentApplicationIds = AppUsage.recentApplicationIds;
         const matches = [];
 
         for (let i = 0; i < applications.length; i++) {
@@ -52,6 +53,19 @@ PopupWindow {
         }
 
         matches.sort(function(a, b) {
+            if (needle.length === 0) {
+                const aRecentIndex = recentApplicationIds.indexOf(a.id);
+                const bRecentIndex = recentApplicationIds.indexOf(b.id);
+
+                if (aRecentIndex !== -1 || bRecentIndex !== -1) {
+                    if (aRecentIndex === -1)
+                        return 1;
+                    if (bRecentIndex === -1)
+                        return -1;
+                    return aRecentIndex - bRecentIndex;
+                }
+            }
+
             return a.name.localeCompare(b.name, undefined, { sensitivity: "base" });
         });
         return matches;
@@ -86,6 +100,7 @@ PopupWindow {
         if (!entry)
             return;
 
+        AppUsage.recordLaunch(entry);
         entry.execute();
         closePopup();
     }

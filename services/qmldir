@@ -6,3 +6,4 @@ singleton Wifi 1.0 Wifi.qml
 singleton Bluetooth 1.0 Bluetooth.qml
 singleton Notifications 1.0 Notifications.qml
 singleton Wallpaper 1.0 Wallpaper.qml
+singleton AppUsage 1.0 AppUsage.qml
