@@ -13,6 +13,9 @@ PanelWindow {
     property var screenModel: null
     property int topOffset: 48
     property int toastDuration: 5000 // milliseconds
+    property int slideInDuration: 360
+    property int slideOutDuration: 300
+    property int slideOvershoot: 24
 
     screen: screenModel
 
@@ -32,7 +35,9 @@ PanelWindow {
 
     implicitWidth: 350
     implicitHeight: Math.max(1, toastList.contentHeight)
-    visible: toastModel.count > 0
+    // Keep the transparent host surface mapped so the compositor does not
+    // animate the window itself when the first toast appears.
+    visible: true
 
     ListModel {
         id: toastModel
@@ -68,13 +73,24 @@ PanelWindow {
         model: toastModel
 
         add: Transition {
-            NumberAnimation { property: "opacity"; from: 0; to: 1; duration: 180; easing.type: Easing.OutCubic }
-            NumberAnimation { property: "x"; from: 60; to: 0; duration: 180; easing.type: Easing.OutCubic }
+            NumberAnimation {
+                property: "x"
+                from: toastList.width + toastWindow.slideOvershoot
+                to: 0
+                duration: toastWindow.slideInDuration
+                easing.type: Easing.OutCubic
+            }
         }
 
+        // This handles forced removals when the five-toast limit is reached.
+        // Normal dismissals finish their slide before touching the model.
         remove: Transition {
-            NumberAnimation { property: "opacity"; to: 0; duration: 150; easing.type: Easing.OutCubic }
-            NumberAnimation { property: "x"; to: 60; duration: 150; easing.type: Easing.OutCubic }
+            NumberAnimation {
+                property: "x"
+                to: toastList.width + toastWindow.slideOvershoot
+                duration: toastWindow.slideOutDuration
+                easing.type: Easing.InCubic
+            }
         }
 
         displaced: Transition {
@@ -83,6 +99,8 @@ PanelWindow {
 
         delegate: Rectangle {
             id: toastCard
+            property bool dismissing: false
+
             width: toastList.width
             implicitHeight: cardCol.implicitHeight + 20
             radius: 12
@@ -96,6 +114,14 @@ PanelWindow {
             }
 
             function dismissThis() {
+                if (dismissing)
+                    return;
+
+                dismissing = true;
+                dismissAnimation.restart();
+            }
+
+            function removeFromModel() {
                 for (let i = 0; i < toastModel.count; i++) {
                     if (toastModel.get(i).notifId === model.notifId) {
                         toastModel.remove(i);
@@ -104,11 +130,21 @@ PanelWindow {
                 }
             }
 
+            NumberAnimation {
+                id: dismissAnimation
+                target: toastCard
+                property: "x"
+                to: toastList.width + toastWindow.slideOvershoot
+                duration: toastWindow.slideOutDuration
+                easing.type: Easing.InCubic
+                onFinished: toastCard.removeFromModel()
+            }
+
             // Auto-dismiss timer (pauses if mouse is hovering)
             Timer {
                 id: dismissTimer
                 interval: toastWindow.toastDuration
-                running: !cardHover.containsMouse
+                running: !cardHover.containsMouse && !toastCard.dismissing
                 onTriggered: toastCard.dismissThis()
             }
 
