@@ -281,21 +281,37 @@ PanelWindow {
                 }
             }
 
-            // Subtle countdown progress bar
-            Rectangle {
+            // Keep the countdown inside the flat section of the rounded bottom
+            // edge so it reads as part of the card rather than a separate line.
+            Item {
+                id: countdownTrack
                 anchors.bottom: parent.bottom
                 anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottomMargin: toastCard.border.width
+                anchors.leftMargin: toastCard.radius
+                anchors.rightMargin: toastCard.radius
                 height: 2
-                radius: 1
-                color: Theme.colors.default_accent
-                opacity: 0.45
+                clip: true
 
-                NumberAnimation on width {
-                    from: toastCard.width
-                    to: 0
-                    duration: toastWindow.toastDuration
-                    running: true
-                    paused: cardHover.containsMouse
+                Rectangle {
+                    id: countdownBar
+                    property real remaining: 1
+
+                    anchors.left: parent.left
+                    width: countdownTrack.width * remaining
+                    height: parent.height
+                    radius: height / 2
+                    color: Theme.colors.default_accent
+                    opacity: 0.45
+
+                    NumberAnimation on remaining {
+                        from: 1
+                        to: 0
+                        duration: toastWindow.toastDuration
+                        running: true
+                        paused: cardHover.containsMouse
+                    }
                 }
             }
         }
