@@ -166,7 +166,7 @@ Do not replace neutral bar surfaces with `Theme.colors`; switching themes must n
 - Text: `SF Pro Display`.
 - UI glyphs: `Material Symbols Rounded`.
 - Application icons: `DesktopEntries` metadata resolved through `Quickshell.iconPath()`.
-- `launch.sh` reads the global GTK icon theme (`gsettings`, then GTK 3 settings as fallback), exports it as `QS_ICON_THEME`, and starts Quickshell with `qs -d`. This makes workspace and launcher icons follow the theme selected by `nwg-look` after a restart.
+- `launch.sh` reads the global GTK icon theme (`gsettings`, then GTK 3 settings as fallback), exports it as `QS_ICON_THEME`, and starts this configuration with `qs --no-duplicate -d`. Login must use `launch.sh --start` too; launching bare `qs` bypasses the theme setup. The default restart mode refuses to terminate an active session lock.
 
 The preserved `workspaceIcons.jsonc` Nerd Font mapping is currently commented out in `Workspaces.qml`; natural system icons are the active path.
 
@@ -207,6 +207,26 @@ Use the launcher so icon-theme synchronization and daemonization are applied:
 ```bash
 ./launch.sh
 ```
+
+For Hyprland autostart, use `~/.config/quickshell/launch.sh --start`. If setting
+the GTK icon theme at login, run that command before the launcher in the same
+shell command (joined with `&&`); separate `hl.exec_cmd` calls run concurrently.
+
+The bar hides on the monitor whose displayed workspace is fullscreen, including
+special workspaces. `qs ipc call bar refresh` refreshes monitor/workspace state
+after DPMS or suspend; `qs ipc call bar status` reports each bar's visibility.
+The local `~/.config/hypr/hypridle.conf` calls `bar refresh` on wake, routes idle
+locking through `loginctl lock-session`, and uses `inhibit_sleep = 3` to wait for
+the compositor's session-lock notification. Do not quote the entire `lock_cmd`
+value: it is a shell command, not a single executable name.
+
+On this machine, `~/.config/hypr/modules/misc.lua` disables Hyprland's built-in
+wallpaper and splash. The November 17 crash enters `CCairoSurface::cairo()` from
+the compositor renderer; the 0.57.1/0.57.2 background path dereferences an
+unchecked Cairo image when preparing a new monitor. Disabling the built-in
+background bypasses that path while `awww` continues supplying the wallpaper.
+This is a configuration workaround; physical suspend/unlock/HDMI testing is
+still needed to confirm that it covers the reported crash sequence.
 
 Useful diagnostics:
 

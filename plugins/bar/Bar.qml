@@ -1,6 +1,7 @@
 import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Io
+import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
 import "../../shared"
@@ -15,6 +16,45 @@ Scope {
     LockScreen {}
 
     property var clockWidgets: []
+
+    function refreshMonitorState() {
+        Hyprland.refreshMonitors();
+        Hyprland.refreshWorkspaces();
+    }
+
+    // Fullscreen can remain active across DPMS/suspend, without another
+    // fullscreen event when the layer surfaces are mapped on wake.
+    IpcHandler {
+        target: "bar"
+
+        function refresh(): void { root.refreshMonitorState(); }
+        function status(): string {
+            return JSON.stringify(root.clockWidgets.map(widget => ({
+                screen: widget.barWindow.screen.name,
+                fullscreen: widget.barWindow.workspaceFullscreen,
+                visible: widget.barWindow.visible
+            })));
+        }
+    }
+
+    Connections {
+        target: Hyprland
+
+        function onRawEvent(event) {
+            if (["fullscreen", "workspace", "workspacev2", "focusedmon",
+                 "activespecial", "activespecialv2", "moveworkspace", "moveworkspacev2",
+                 "monitoradded", "monitoraddedv2", "monitorremoved"].indexOf(event.name) !== -1)
+                monitorRefresh.restart();
+        }
+    }
+
+    Timer {
+        id: monitorRefresh
+        interval: 50
+        onTriggered: root.refreshMonitorState()
+    }
+
+    Component.onCompleted: refreshMonitorState()
 
     function registerClockWidget(widget) {
         if (clockWidgets.indexOf(widget) === -1)
@@ -106,6 +146,37 @@ Scope {
             PanelWindow {
                 id: barWindow
                 screen: modelData
+
+                readonly property var monitor: {
+                    const monitors = Hyprland.monitors.values;
+                    return monitors.find(m => m.name === barWindow.screen?.name) ?? null;
+                }
+                readonly property bool workspaceFullscreen: {
+                    if (!monitor)
+                        return false;
+                    // A special workspace covers the normal workspace while open.
+                    const specialName = monitor.lastIpcObject?.specialWorkspace?.name ?? "";
+                    const workspace = specialName.length > 0
+                        ? Hyprland.workspaces.values.find(w => w.name === specialName)
+                        : monitor.activeWorkspace;
+                    return workspace?.hasFullscreen ?? false;
+                }
+
+                visible: !workspaceFullscreen
+                WlrLayershell.layer: WlrLayer.Top
+                WlrLayershell.namespace: "quickshell-bar"
+
+                onWorkspaceFullscreenChanged: {
+                    if (!workspaceFullscreen)
+                        return;
+                    if (clockWidget)
+                        clockWidget.closeIpcSwitchers();
+                    if (rightDropdownController) {
+                        rightDropdownController.pendingPopup = null;
+                        if (rightDropdownController.activePopup)
+                            rightDropdownController.activePopup.closePopup();
+                    }
+                }
 
                 anchors {
                     top: true;
