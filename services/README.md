@@ -39,7 +39,7 @@ MouseArea { onClicked: Audio.toggleMute() }
 | Service | Primary backend | Main consumers |
 | --- | --- | --- |
 | `Time` | `SystemClock` | Clock pill, popup handoff states, and lock-screen clock/date. |
-| `Power` | UPower | Battery pill. |
+| `Power` | UPower/PowerProfiles plus `power_ctl.py` | Battery pill and power GUI. |
 | `Audio` | PipeWire plus `audio_ctl.py`/`pactl` | Volume widget and volume GUI. |
 | `Brightness` | `brightnessctl` plus `/sys/class/backlight` | Lower-center hardware-level OSD. |
 | `Wifi` | Quickshell Networking, `nmcli`, `iw`, `wifi_scan.py` | Wi-Fi widget and Wi-Fi GUI. |
@@ -57,16 +57,18 @@ Popups reference `Time.time` both for display and as a daily/minute refresh depe
 
 ## `Power.qml`
 
-Uses `UPower.displayDevice` and `UPower.onBattery`.
+Uses `UPower.displayDevice`, `UPower.onBattery`, and the native `PowerProfiles` interface. Charge-limit capability discovery and authenticated sysfs writes are delegated to `scripts/power_ctl.py`.
 
 Properties:
 
-- `battery`: rounded percentage string or `N.A`.
-- `isCharging`: charging, pending charge, or fully charged while on AC.
-- `icon`: Material Symbol chosen from battery level and charging state.
-- `color`: theme red below 15%, theme yellow through 30%, otherwise `BarColors.primaryText`.
+- `battery`, `percentage`, `pluggedIn`, `activelyCharging`, and `isCharging`.
+- `icon` and `color`: semantic battery representation for compact and detailed UI.
+- `estimateText`: UPower's time-to-empty/full estimate with an energy-rate fallback and charge-limit awareness.
+- `powerProfileId`, `powerModes`, and `setPowerProfile(id)`.
+- `chargeLimitSupported`, `chargeLimitMode`, `chargeLimit`, `chargeLimitPresets`, and `chargeLimitDetail`.
+- `setChargeLimit(percent)` and `recheckChargeLimit()`.
 
-This service reports battery state only. Suspend, logout, reboot, and poweroff are one-shot actions owned by `plugins/logoutManager/LogoutManager.qml`.
+Numeric `charge_control_end_threshold` hardware exposes the 80/85/90/95/off presets. Hardware with only the kernel `Long_Life` charge type exposes its fixed conservation threshold and off. Changes run through `pkexec` because sysfs charge controls are root-owned. Suspend, logout, reboot, and poweroff remain one-shot actions owned by `plugins/logoutManager/LogoutManager.qml`.
 
 ## `Audio.qml`
 
@@ -228,6 +230,10 @@ Commands include `status`, `scan`, `power`, `connect`, `disconnect`, `pair`, and
 ### `scripts/wifi_scan.py`
 
 Parses saved NetworkManager connections and nearby access points. It removes empty SSIDs, deduplicates BSSIDs by strongest signal, and marks known, secure, and connected networks.
+
+### `scripts/power_ctl.py`
+
+Detects standard numeric battery thresholds, the kernel `Long_Life` charge type, and the legacy Lenovo conservation-mode interface. `status` is unprivileged and emits JSON; `set-limit <percent>` validates presets and is launched through PolicyKit for the root-owned sysfs write.
 
 ## Adding or changing a service
 

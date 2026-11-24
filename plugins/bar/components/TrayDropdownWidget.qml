@@ -9,13 +9,14 @@ Item {
     property var dropdownController: null
     property var dropdown: null
     property bool hovered: false
+    property real compactWidth: 33
     readonly property color pillColor: hovered || (dropdown && dropdown.visible) ? BarColors.hoverAndBorder : BarColors.surfaceBackground
     default property alias pillContents: pill.data
 
     // The bar anchors each widget to its right neighbour, so extra width only
     // pushes earlier items. No layout pass or second animation is involved.
     // The compact pill and popup's origin both stay at this slot's right edge.
-    implicitWidth: dropdown && dropdown.visible ? dropdown.animatedWidth : 33
+    implicitWidth: dropdown && dropdown.visible ? dropdown.animatedWidth : compactWidth
     implicitHeight: 33
 
     function toggleDropdown() {
@@ -30,7 +31,7 @@ Item {
             id: pill
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
-            width: 33
+            width: root.compactWidth
             height: 33
             radius: height / 2
             color: root.pillColor

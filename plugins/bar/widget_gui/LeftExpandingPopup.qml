@@ -13,8 +13,11 @@ PopupWindow {
     property real targetHeight: 300
     property real maximumHeight: 540
     property real compactSize: 33
+    property real compactWidth: compactSize
     property string compactIcon: ""
+    property string compactLabel: ""
     property color compactIconColor: BarColors.primaryText
+    property color compactLabelColor: compactIconColor
     property color compactColor: BarColors.surfaceBackground
     property color borderColor: BarColors.hoverAndBorder
     property int animationDuration: 260
@@ -25,7 +28,7 @@ PopupWindow {
     property real expansionProgress: 0
     property real expandedHeight: targetHeight
     readonly property real contentProgress: Math.max(0, Math.min(1, expansionProgress))
-    readonly property real animatedWidth: compactSize + (targetWidth - compactSize) * expansionProgress
+    readonly property real animatedWidth: compactWidth + (targetWidth - compactWidth) * expansionProgress
     readonly property real animatedHeight: compactSize + (expandedHeight - compactSize) * expansionProgress
     readonly property int overshootPadding: 20
     default property alias popupContent: contentHost.data
@@ -177,17 +180,31 @@ PopupWindow {
             Keys.onEscapePressed: root.closePopup()
 
             Item {
-                width: root.compactSize
+                width: root.compactWidth
                 height: root.compactSize
                 anchors.top: parent.top
                 anchors.right: parent.right
                 opacity: 1 - root.contentProgress
-                Text {
+
+                Row {
                     anchors.centerIn: parent
-                    text: root.compactIcon
-                    color: root.compactIconColor
-                    font.family: "Material Symbols Rounded"
-                    font.pixelSize: 16
+                    spacing: 3
+
+                    Text {
+                        text: root.compactIcon
+                        color: root.compactIconColor
+                        font.family: "Material Symbols Rounded"
+                        font.pixelSize: 16
+                        visible: text !== ""
+                    }
+
+                    Text {
+                        text: root.compactLabel
+                        color: root.compactLabelColor
+                        font.family: "SF Pro Display"
+                        font.pixelSize: 16
+                        visible: text !== ""
+                    }
                 }
             }
 

@@ -268,6 +268,8 @@ Scope {
                     PowerWidget {
                         id: powerWidget
                         anchors.right: parent.right
+                        barWindow: barWindow
+                        dropdownController: rightDropdownController
                     }
                 }
             }

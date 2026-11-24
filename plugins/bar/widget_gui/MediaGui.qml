@@ -217,22 +217,45 @@ PopupWindow {
                 anchors.rightMargin: 11
                 spacing: 3
 
-                ClippingRectangle {
+                Item {
+                    id: compactArtworkBadge
+
+                    implicitWidth: 25
+                    implicitHeight: 25
                     Layout.preferredWidth: 25
                     Layout.preferredHeight: 25
-                    radius: 6
-                    color: BarColors.deepBackground
+                    Layout.minimumWidth: 25
+                    Layout.minimumHeight: 25
+                    Layout.maximumWidth: 25
+                    Layout.maximumHeight: 25
+                    Layout.alignment: Qt.AlignVCenter
+                    Layout.rightMargin: 4
 
-                    Image {
-                        id: compactArtwork
+                    Rectangle {
                         anchors.fill: parent
-                        source: root.artworkUrl
-                        asynchronous: true
-                        cache: true
-                        fillMode: Image.PreserveAspectCrop
-                        sourceSize.width: 96
-                        sourceSize.height: 96
-                        visible: status === Image.Ready
+                        radius: width / 2
+                        color: compactArtwork.status === Image.Ready
+                               ? BarColors.deepBackground
+                               : BarColors.hoverAndBorder
+
+                        Behavior on color { ColorAnimation { duration: 150 } }
+                    }
+
+                    ClippingRectangle {
+                        anchors.fill: parent
+                        radius: width / 2
+                        visible: compactArtwork.status === Image.Ready
+
+                        Image {
+                            id: compactArtwork
+                            anchors.fill: parent
+                            source: root.artworkUrl
+                            asynchronous: true
+                            cache: true
+                            fillMode: Image.PreserveAspectCrop
+                            sourceSize.width: 96
+                            sourceSize.height: 96
+                        }
                     }
 
                     Text {

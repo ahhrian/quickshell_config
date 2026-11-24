@@ -49,11 +49,11 @@ Hyprland / PipeWire / NetworkManager / BlueZ / UPower / awww
 │   ├── Brightness.qml            Backlight discovery and reactive brightness state
 │   ├── Bluetooth.qml             BlueZ status, scan, pair, connect, and remove
 │   ├── Notifications.qml         Freedesktop notification server and DND state
-│   ├── Power.qml                 UPower battery state
+│   ├── Power.qml                 Battery, power-profile, estimate, and charge-limit state
 │   ├── Time.qml                  Minute-resolution clock
 │   ├── Wallpaper.qml             Per-theme wallpaper history and awww application
 │   ├── Wifi.qml                  NetworkManager status, scanning, and actions
-│   ├── scripts/                  Python adapters for audio, Bluetooth, and Wi-Fi
+│   ├── scripts/                  Python adapters for audio, Bluetooth, Wi-Fi, and charge limits
 │   └── qmldir                    Registers every service singleton
 └── plugins/
     ├── bar/
@@ -77,7 +77,7 @@ Hyprland / PipeWire / NetworkManager / BlueZ / UPower / awww
 | --- | --- | --- |
 | Left | `Workspaces` | Workspaces 1–5 on the laptop/single monitor and 6–10 on an external monitor, expanding for active extra workspaces. |
 | Center | `ClockWidget` | The visual and animation origin for the calendar, clock GUI, and every IPC plugin. |
-| Right | Wi-Fi, Bluetooth, volume, battery | Ordered left-to-right. Wi-Fi/Bluetooth/volume expand leftward and push only widgets to their left. |
+| Right | Wi-Fi, Bluetooth, volume, battery | Ordered left-to-right. Their control panels expand leftward and push only widgets to their left. |
 
 `NotificationWidget` exists but is currently commented out in the center layout. `plugins/popupUIs/PopupUIs.qml` keeps `NotificationToasts` active on every screen and routes the volume/brightness OSD to the focused monitor.
 
@@ -93,7 +93,7 @@ IPC plugins are routed by `Bar.qml` to the `ClockWidget` on `Hyprland.focusedMon
 
 ### Right-side dropdowns
 
-`WifiGui`, `BluetoothGui`, and `VolumeGui` inherit `LeftExpandingPopup`. Their top-right corner remains fixed at the compact widget while width grows to the left. `TrayDropdownWidget` exposes the animated width to the bar, which pushes preceding right-side widgets left without moving widgets to the popup's right. `DropdownController` serializes transitions so only one right-side dropdown is active.
+`WifiGui`, `BluetoothGui`, `VolumeGui`, and `PowerGui` inherit `LeftExpandingPopup`. Their top-right corner remains fixed at the compact widget while width grows to the left. `TrayDropdownWidget` exposes the animated width to the bar, which pushes preceding right-side widgets left without moving widgets to the popup's right. `DropdownController` serializes transitions so only one right-side dropdown is active.
 
 ### Transient system overlays
 
@@ -246,4 +246,4 @@ Before handing off changes:
 
 ## Dependencies
 
-Core runtime dependencies include Quickshell built with Wayland session-lock and PAM support, Hyprland, Qt 6/QML (including `QtQuick.Effects`), Linux PAM, PipeWire/PulseAudio tools (`pactl`), NetworkManager (`nmcli`), `iw`, BlueZ (`bluetoothctl`), UPower, Python 3, and `awww`. The configured fonts and the selected system icon theme must also be installed.
+Core runtime dependencies include Quickshell built with Wayland session-lock and PAM support, Hyprland, Qt 6/QML (including `QtQuick.Effects`), Linux PAM, PipeWire/PulseAudio tools (`pactl`), NetworkManager (`nmcli`), `iw`, BlueZ (`bluetoothctl`), UPower with a PowerProfiles provider, Python 3, PolicyKit (`pkexec`) for charge-limit changes, and `awww`. The configured fonts and the selected system icon theme must also be installed.

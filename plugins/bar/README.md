@@ -56,7 +56,7 @@ Base item for the right-side Wi-Fi, Bluetooth, and volume controls.
 
 ### `DropdownController.qml`
 
-Serializes Wi-Fi/Bluetooth/volume popups. If a different dropdown is requested, it closes the current popup, waits for `closeFinished`, then opens the pending popup on the next event-loop turn.
+Serializes Wi-Fi/Bluetooth/volume/power popups. If a different dropdown is requested, it closes the current popup, waits for `closeFinished`, then opens the pending popup on the next event-loop turn.
 
 ## Bar widgets
 
@@ -66,7 +66,7 @@ Serializes Wi-Fi/Bluetooth/volume popups. If a different dropdown is requested, 
 | `WifiWidget` | Material Symbol from `Wifi.icon` | Left click opens Wi-Fi GUI; right click opens hidden-network setup. |
 | `BluetoothWidget` | Material Symbol from `Bluetooth.icon` | Left click opens Bluetooth GUI. |
 | `VolumeWidget` | Audio icon plus symmetric Canvas progress ring | Left click opens volume GUI; right click toggles mute; wheel changes volume by 5%. |
-| `PowerWidget` | Battery icon and percentage | Read-only display driven by `Power`. |
+| `PowerWidget` | Battery icon and percentage | Left click opens the power GUI. |
 | `NotificationWidget` | Notification/DND icon | Left click toggles notification center; right click toggles DND. Present but not mounted in `Bar.qml`. |
 
 Compact bar icons intentionally use monochrome `BarColors` even when their services expose theme-aware `iconColor` properties. Semantic colors are reserved for detailed popup content and alerts.
@@ -164,6 +164,10 @@ Width 380 px, maximum height 540 px. Shows controller status, power toggle, scan
 ### `VolumeGui.qml`
 
 Width 350 px, maximum height 520 px. Shows mute state, draggable/clickable/scrollable master volume control, refresh, and a scrollable output-device list. Selecting a sink calls `Audio.setDefaultSink()`.
+
+### `PowerGui.qml`
+
+Width 400 px, maximum height 520 px. Shows the live battery estimate, power-profile selection, and hardware-aware charge-limit presets. Numeric-threshold hardware receives 80/85/90/95/off choices; fixed-conservation hardware exposes only its supported 80%/off choices. Firmware charge-limit writes request PolicyKit authentication.
 
 ## Clock-attached built-in GUIs
 
